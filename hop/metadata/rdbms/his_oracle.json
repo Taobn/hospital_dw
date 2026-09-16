@@ -1,0 +1,49 @@
+{
+  "virtualPath": "",
+  "rdbms": {
+    "ORACLE": {
+      "databaseName": "${HIS_ORACLE_DATABASE}",
+      "pluginId": "ORACLE",
+      "connectionType": "SERVICE_NAME",
+      "accessType": 0,
+      "sshTunnelUsername": "",
+      "trustStorePassword": "Encrypted ",
+      "hostname": "${HIS_ORACLE_HOSTNAME}",
+      "password": "${HIS_ORACLE_PASSWORD}",
+      "trustStoreFile": "",
+      "sslServerDnMatch": true,
+      "sshTunnelHost": "",
+      "tlsCredentialType": "NONE",
+      "manualUrl": "",
+      "trustStoreType": "",
+      "sshTunnelPassphrase": "Encrypted ",
+      "sshTunnelPrivateKeyFile": "",
+      "sslServerCertDn": "",
+      "keyStoreType": "",
+      "sshTunnelPort": "22",
+      "tnsAdmin": "",
+      "walletDirectory": "",
+      "sshTunnelUsePrivateKey": false,
+      "keyStorePassword": "Encrypted ",
+      "keyStoreFile": "",
+      "sshTunnelEnabled": false,
+      "useTcps": false,
+      "pluginName": "Oracle",
+      "port": "${HIS_ORACLE_PORT}",
+      "attributes": {
+        "SUPPORTS_TIMESTAMP_DATA_TYPE": "Y",
+        "QUOTE_ALL_FIELDS": "N",
+        "SUPPORTS_BOOLEAN_DATA_TYPE": "Y",
+        "FORCE_IDENTIFIERS_TO_LOWERCASE": "N",
+        "PRESERVE_RESERVED_WORD_CASE": "Y",
+        "SQL_CONNECT": "",
+        "FORCE_IDENTIFIERS_TO_UPPERCASE": "N",
+        "PREFERRED_SCHEMA_NAME": ""
+      },
+      "sshTunnelPassword": "Encrypted ",
+      "username": "${HIS_ORACLE_USERNAME}",
+      "walletPassword": "Encrypted "
+    }
+  },
+  "name": "his_oracle"
+}

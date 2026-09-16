@@ -1,0 +1,10 @@
+loggingDate;loggingPhase;pipelineName;pipelineFilename;pipelineStart;pipelineEnd;pipelineLogChannelId;parentLogChannelId;pipelineLogging;pipelineErrorCount;pipelineStatusDescription;total_errors;min_input;max_input;min_output;max_output;min_read;max_read;min_written;max_written;max_duration;max_rs_read;max_rs_written
+2026/09/15 10:36:13.755;end;p02_raw_exam;/srv/hospital_dw/hop/pipelines/his/p02_raw_exam.hpl;2026/09/15 10:36:13.310;2026/09/15 10:36:13.749;5b51bdcb-e16b-43dd-8d1c-9d3d3fd5be72;;"2026/09/15 10:36:13 - p02_raw_exam - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/15 10:36:13 - p02_raw_exam - Execution started for pipeline [p02_raw_exam]
+2026/09/15 10:36:13 - 01_get_dataset_metadata.0 - Finished reading query, closing connection.
+2026/09/15 10:36:13 - 01_get_dataset_metadata.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/15 10:36:13 - 02_validate_dataset.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/15 10:36:13 - Select dataset_id.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/15 10:36:13 - 04_get_watermark.0 - Finished reading query, closing connection.
+2026/09/15 10:36:13 - 04_get_watermark.0 - Finished processing (I=1, O=0, R=1, W=1, U=0, E=0)
+2026/09/15 10:36:13 - p02_raw_exam - Pipeline duration : 0.439 seconds [  0.439"" ]";0;Finished;0;0;1;0;0;0;1;1;1;205;0;0

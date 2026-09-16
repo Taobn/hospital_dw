@@ -1,0 +1,48 @@
+# Generated from optional-plugins.yaml - do not edit by hand.
+# Rebuild the marketplace module to refresh (Maven generate-resources).
+#
+# Restores marketplace-optional plugins that used to ship in the fat hop-client.
+# From the Hop install directory (network required for ASF/Central or your mirror):
+#
+#   ./hop marketplace apply -f full-client-env.yaml
+#
+# Then restart Hop so the plugin registry reloads.
+# Do not use --prune unless you intend to remove other marketplace installs.
+#
+version: "1.0"
+hopVersion: "2.19.0"
+enforceOnRun: false
+# repositories omitted: uses hop-config defaults (ASF primary + Maven Central)
+plugins:
+ - artifactId: hop-engines-spark
+ - artifactId: hop-engines-beam
+ - artifactId: hop-transform-script
+ - artifactId: hop-transform-detectlanguage
+ - artifactId: hop-transform-tika
+ - artifactId: hop-transform-drools
+ - artifactId: hop-transform-stanfordnlp
+ - artifactId: hop-transform-vcard
+ - artifactId: hop-transform-fake
+ - artifactId: hop-tech-cassandra
+ - artifactId: hop-tech-parquet
+ - artifactId: hop-tech-arrow
+ - artifactId: hop-tech-dropbox
+ - artifactId: hop-transform-edi2xml
+ - artifactId: hop-tech-neo4j
+ - artifactId: hop-tech-azure
+ - artifactId: hop-tech-aws
+ - artifactId: hop-tech-mongodb
+ - artifactId: hop-tech-redis
+ - artifactId: hop-tech-elastic
+ - artifactId: hop-tech-opensearch
+ - artifactId: hop-tech-salesforce
+ - artifactId: hop-tech-sftp
+ - artifactId: hop-tech-avro
+ - artifactId: hop-tech-google
+ - artifactId: hop-tech-minio
+ - artifactId: hop-tech-databricks
+ - artifactId: hop-misc-py4j
+ - artifactId: hop-misc-rest
+ - artifactId: hop-misc-documentation
+ - artifactId: hop-misc-import
+ - artifactId: hop-misc-mail

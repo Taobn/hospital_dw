@@ -1,0 +1,31 @@
+sourcePipelineName;genre;nb_books_in_genre
+generate-fake-books;Biography/Autobiography;330
+generate-fake-books;Classic;334
+generate-fake-books;Comic/Graphic Novel;309
+generate-fake-books;Crime/Detective;363
+generate-fake-books;Essay;328
+generate-fake-books;Fable;374
+generate-fake-books;Fairy tale;314
+generate-fake-books;Fanfiction;336
+generate-fake-books;Fantasy;324
+generate-fake-books;Fiction in verse;336
+generate-fake-books;Fiction narrative;353
+generate-fake-books;Folklore;312
+generate-fake-books;Historical fiction;320
+generate-fake-books;Horror;355
+generate-fake-books;Humor;337
+generate-fake-books;Legend;329
+generate-fake-books;Metafiction;326
+generate-fake-books;Mystery;327
+generate-fake-books;Mythology;322
+generate-fake-books;Mythopoeia;363
+generate-fake-books;Narrative nonfiction;329
+generate-fake-books;Realistic fiction;315
+generate-fake-books;Reference book;309
+generate-fake-books;Science fiction;331
+generate-fake-books;Short story;333
+generate-fake-books;Speech;316
+generate-fake-books;Suspense/Thriller;339
+generate-fake-books;Tall tale;345
+generate-fake-books;Textbook;346
+generate-fake-books;Western;345

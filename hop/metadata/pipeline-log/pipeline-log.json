@@ -1,0 +1,17 @@
+{
+  "logLevel": "ERROR",
+  "pipelinesToLog": [
+    {
+      "pipelineToLogFilename": "${PROJECT_HOME}/pipelines/ods/raw/his/p02_raw_exam.hpl"
+    }
+  ],
+  "failParentOnLoggingFailure": false,
+  "loggingParentsOnly": true,
+  "name": "pipeline-log",
+  "intervalInSeconds": "30",
+  "executingPeriodically": false,
+  "pipelineFilename": "${PROJECT_HOME}/reflection/pipeline-log.hpl",
+  "executingAtEnd": true,
+  "enabled": true,
+  "executingAtStart": true
+}

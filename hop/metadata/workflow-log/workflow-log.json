@@ -1,0 +1,16 @@
+{
+  "logLevel": "ERROR",
+  "failParentOnLoggingFailure": false,
+  "loggingParentsOnly": true,
+  "name": "workflow-log",
+  "workflowToLog": [
+    "${PROJECT_HOME}/reflection/generate-fake-books.hwf",
+    "${PROJECT_HOME}/workflows/parallel/w01_his_ingestion.hwf"
+  ],
+  "intervalInSeconds": "30",
+  "executingPeriodically": false,
+  "pipelineFilename": "${PROJECT_HOME}/reflection/workflow-log.hpl",
+  "executingAtEnd": true,
+  "enabled": true,
+  "executingAtStart": true
+}

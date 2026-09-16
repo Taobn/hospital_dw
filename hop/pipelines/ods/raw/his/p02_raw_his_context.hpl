@@ -1,0 +1,1077 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <pipeline_version/>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <pipeline_type>Normal</pipeline_type>
+    <pipeline_status>1</pipeline_status>
+    <parameters>
+      <parameter>
+        <name>PRM_HOP_RUN_ID</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_FORCE_FULL</name>
+        <description/>
+        <default_value>N</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_DATASET_CODE</name>
+        <description/>
+        <default_value>HIS_EXAM</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_BATCH_ID</name>
+        <description/>
+        <default_value/>
+      </parameter>
+    </parameters>
+    <name>p02_raw_his</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Load structured HIS HMS_EXAM data into raw.ods_raw_exam using control metadata, watermark and batch control.</description>
+    <extended_description/>
+    <created_user>-</created_user>
+    <modified_user>-</modified_user>
+    <created_date>2026/09/14 15:29:54.097</created_date>
+    <modified_date>2026/09/14 15:29:54.097</modified_date>
+  </info>
+  <transform>
+    <type>TableInput</type>
+    <name>01 Read Dataset Metadata</name>
+    <sql>SELECT
+    d.dataset_id,
+    d.dataset_code,
+    d.source_instance_id,
+    d.source_schema,
+    d.source_object,
+    d.refresh_mode,
+	d.ingestion_config
+
+FROM control.dataset d
+
+WHERE d.dataset_code = '${PRM_DATASET_CODE}'
+  AND d.is_active = TRUE;</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>FilterRows</type>
+    <name>01A Validate Dataset Metadata</name>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <operator>-</operator>
+        <leftvalue>dataset_code</leftvalue>
+        <function>IS NOT NULL</function>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <operator>-</operator>
+            <leftvalue>dataset_code</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>source_instance_id</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>source_schema</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>source_object</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+          <condition>
+            <negated>N</negated>
+            <operator>AND</operator>
+            <leftvalue>refresh_mode</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+        </conditions>
+      </condition>
+    </compare>
+    <send_true_to>03 Read Ingestion</send_true_to>
+    <send_false_to>Abort</send_false_to>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>02 Read Watermark</name>
+    <sql>SELECT
+	w.dataset_id,
+	d.dataset_code,
+    w.watermark_id,
+    w.watermark_type,
+    w.watermark_column,
+    w.last_value_timestamp,
+	w.last_value_numeric,
+    w.last_value_text,
+    w.last_batch_id,
+    w.initialized_at
+FROM control.watermark w
+JOIN control.dataset d
+    ON d.dataset_id = w.dataset_id
+WHERE d.dataset_code = '${PRM_DATASET_CODE}'
+  AND w.is_active = TRUE;
+</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>04 Calculate Extraction Window</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var mode;
+var eff;
+
+// Determine FULL vs INCREMENTAL
+if (force_full == "Y") {
+    mode = "FULL";
+} else if (strategy != "WATERMARK") {
+    mode = "FULL";
+} else {
+    if (cursor_data_type == "TIMESTAMP" &amp;&amp; last_value_timestamp != null) {
+        mode = "INCREMENTAL";
+    } else if (cursor_data_type == "NUMERIC" &amp;&amp; last_value_numeric != null) {
+        mode = "INCREMENTAL";
+    } else if (cursor_data_type == "TEXT" &amp;&amp; last_value_text != null) {
+        mode = "INCREMENTAL";
+    } else {
+        mode = "FULL";
+    }
+}
+
+// Calculate effective_from
+if (mode == "FULL") {
+    eff = null;
+} else {
+    if (cursor_data_type == "TIMESTAMP") {
+        var overlap = parseInt(overlap_minutes);
+        var ts = new Date(last_value_timestamp);
+        eff = new Date(ts.getTime() - overlap * 60000);
+    } else if (cursor_data_type == "NUMERIC") {
+        eff = last_value_numeric;
+    } else if (cursor_data_type == "TEXT") {
+        eff = last_value_text;
+    }
+}
+
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>mode</name>
+        <rename>extraction_mode</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>eff</name>
+        <rename>effective_from</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1120</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>JsonNormalizeInput</type>
+    <name>03 Read Ingestion</name>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <rownum_field/>
+    <limit>0</limit>
+    <valueField>ingestion_config</valueField>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <addresultfile>N</addresultfile>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <recordPath>$</recordPath>
+    <fieldSeparator>.</fieldSeparator>
+    <maxFlattenDepth>-1</maxFlattenDepth>
+    <arrayHandling>STRINGIFY</arrayHandling>
+    <beyondDepthBehavior>STRINGIFY</beyondDepthBehavior>
+    <ignoreMissingField>Y</ignoreMissingField>
+    <files/>
+    <fields>
+      <field>
+        <name>business_date_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>business_date_key</path>
+      </field>
+      <field>
+        <name>delete_strategy</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>delete_strategy</path>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>incremental.cursor_column</path>
+      </field>
+      <field>
+        <name>cursor_data_type</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>incremental.cursor_data_type</path>
+      </field>
+      <field>
+        <name>overlap_minutes</name>
+        <length>-1</length>
+        <type>Integer</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>incremental.overlap_minutes</path>
+      </field>
+      <field>
+        <name>strategy</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>incremental.strategy</path>
+      </field>
+      <field>
+        <name>frequency_minutes</name>
+        <length>-1</length>
+        <type>Integer</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>schedule.frequency_minutes</path>
+      </field>
+      <field>
+        <name>source_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>source_key</path>
+      </field>
+      <field>
+        <name>target_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>target_key</path>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values Ingestion</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_schema</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_object</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>strategy</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_data_type</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>overlap_minutes</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>delete_strategy</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>frequency_minutes</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>business_date_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>dataset_code</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>GetVariable</type>
+    <name>Get variables HIS Workflow</name>
+    <fields>
+      <field>
+        <name>force_full</name>
+        <variable>${PRM_FORCE_FULL}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>dataset_code</name>
+        <variable>${PRM_DATASET_CODE}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <variable>${PRM_BATCH_ID}</variable>
+        <type>Integer</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>hop_run_id</name>
+        <variable>${PRM_HOP_RUN_ID}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>752</xloc>
+      <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>MergeJoin</type>
+    <name>Merge join Extract Ingestion</name>
+    <join_type>LEFT OUTER</join_type>
+    <transform1>Select values Ingestion</transform1>
+    <transform2>Select values Watermark</transform2>
+    <keys_1>
+      <key>dataset_code</key>
+    </keys_1>
+    <keys_2>
+      <key>dataset_code</key>
+    </keys_2>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values Watermark</name>
+    <fields>
+      <field>
+        <name>last_value_timestamp</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>last_value_numeric</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>last_value_text</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>dataset_code</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>MergeJoin</type>
+    <name>Merge join</name>
+    <join_type>LEFT OUTER</join_type>
+    <transform1>Get variables HIS Workflow</transform1>
+    <transform2>Merge join Extract Ingestion</transform2>
+    <keys_1>
+      <key>dataset_code</key>
+    </keys_1>
+    <keys_2>
+      <key>dataset_code</key>
+    </keys_2>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>752</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values calculate</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_schema</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_object</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>force_full</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>hop_run_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>strategy</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>business_date_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_data_type</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>overlap_minutes</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>delete_strategy</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>frequency_minutes</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>last_value_timestamp</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>last_value_numeric</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>last_value_text</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>912</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>Abort</type>
+    <name>Abort</name>
+    <row_threshold>0</row_threshold>
+    <message>Dataset Metadata invalid</message>
+    <always_log_rows>Y</always_log_rows>
+    <abort_option>ABORT_WITH_ERROR</abort_option>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_schema</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>source_object</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>business_date_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>extraction_mode</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_data_type</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>effective_from</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1344</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SetVariable</type>
+    <name>06 Set HIS Context and SQL</name>
+    <fields>
+      <field>
+        <field_name>source_instance_id</field_name>
+        <variable_name>PRM_SOURCE_INSTANCE_ID</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>source_schema</field_name>
+        <variable_name>PRM_SOURCE_SCHEMA</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>source_object</field_name>
+        <variable_name>PRM_SOURCE_OBJECT</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>batch_id</field_name>
+        <variable_name>PRM_BATCH_ID</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>business_date_key</field_name>
+        <variable_name>PRM_BUSINESS_DATE_KEY</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>sql_oracle</field_name>
+        <variable_name>PRM_SQL_ORACLE</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+    </fields>
+    <use_formatting>Y</use_formatting>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1664</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>05 Extraction SQL</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var sql;
+
+// FULL extraction
+if (extraction_mode == "FULL") {
+    sql =   "SELECT " + source_instance_id + " AS runtime_source_instance_id, "
+					  +	batch_id + " AS runtime_batch_id, "
+					  + "a.*" +
+			" FROM " + source_schema + "." + source_object + " a" +
+			" WHERE ROWNUM &lt;= 10";
+}
+
+// INCREMENTAL extraction
+else {
+
+    if (cursor_data_type == "TIMESTAMP") {
+        sql =
+            "SELECT " + source_instance_id + " AS runtime_source_instance_id, "
+					  +	batch_id + " AS runtime_batch_id, "
+					  + "a.*" +
+			" FROM " + source_schema + "." + source_object + " a" +
+            " WHERE a." + cursor_column +
+            " > TO_TIMESTAMP('" + effective_from + "', 'YYYY-MM-DD HH24:MI:SS')" +
+			" AND ROWNUM &lt;= 10";
+    }
+
+    else if (cursor_data_type == "NUMERIC") {
+        sql =
+            "SELECT * FROM " + source_schema + "." + source_object +
+            " WHERE " + cursor_column + " > " + effective_from +
+			" AND ROWNUM &lt;= 10";
+    }
+
+    else if (cursor_data_type == "TEXT") {
+        sql =
+            "SELECT * FROM " + source_schema + "." + source_object +
+            " WHERE " + cursor_column + " > '" + effective_from + "'" +
+			" AND ROWNUM &lt;= 10";
+    }
+}
+
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql</name>
+        <rename>sql_oracle</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1504</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <order>
+    <hop>
+      <from>01 Read Dataset Metadata</from>
+      <to>01A Validate Dataset Metadata</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>03 Read Ingestion</from>
+      <to>Select values Ingestion</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values Ingestion</from>
+      <to>Merge join Extract Ingestion</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>02 Read Watermark</from>
+      <to>Select values Watermark</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values Watermark</from>
+      <to>Merge join Extract Ingestion</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables HIS Workflow</from>
+      <to>Merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values calculate</from>
+      <to>04 Calculate Extraction Window</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>01A Validate Dataset Metadata</from>
+      <to>03 Read Ingestion</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>01A Validate Dataset Metadata</from>
+      <to>Abort</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join Extract Ingestion</from>
+      <to>Merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join</from>
+      <to>Select values calculate</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>04 Calculate Extraction Window</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>05 Extraction SQL</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>05 Extraction SQL</from>
+      <to>06 Set HIS Context and SQL</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <notepads/>
+  <attributes/>
+  <transform_error_handling/>
+</pipeline>

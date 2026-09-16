@@ -1,0 +1,104 @@
+loggingDate;loggingPhase;workflowName;workflowFilename;workflowStart;workflowEnd;workflowLogChannelId;workflowParentLogChannelId;workflowLogging;workflowErrorCount;workflowStatusDescription
+2026/09/16 09:41:41.846;end;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;2026/09/16 09:41:40.967;2026/09/16 09:41:41.841;b16ae4eb-a95a-48d2-b066-c4c317640afc;;"2026/09/16 09:41:40 - w01_his_ingestion - Start of workflow execution
+2026/09/16 09:41:40 - w01_his_ingestion - Starting action [Start]
+2026/09/16 09:41:40 - w01_his_ingestion - Finished action [Start] (result=[true])
+2026/09/16 09:41:40 - w01_his_ingestion - Starting action [01 Validate Dataset]
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [01 Validate Dataset] (result=[true])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [02 Acquire Dataset Lock]
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - ERROR: An error occurred executing this action: 
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - An error occurred executing SQL: 
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - SELECT d.dataset_id
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - FROM control.dataset d
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - WHERE d.dataset_code = ?
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   AND d.is_active = TRUE
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   AND pg_try_advisory_lock(d.dataset_id) = TRUE;
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - 
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock - ERROR: syntax error at or near ""AND""
+2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   Position: 71
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [02 Acquire Dataset Lock] (result=[false])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [03 Stale RUNNING Cleanup]
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [03 Stale RUNNING Cleanup] (result=[true])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [04 Check Active Batch]
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [04 Check Active Batch] (result=[true])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [05 Create Batch]
+2026/09/16 09:41:41 - 05 Create Batch - Using run configuration [local]
+2026/09/16 09:41:41 - p00_create_batch - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/16 09:41:41 - p00_create_batch - Execution started for pipeline [p00_create_batch]
+2026/09/16 09:41:41 - Table input.0 - Finished reading query, closing connection.
+2026/09/16 09:41:41 - Set variables.0 - Setting project variables...
+2026/09/16 09:41:41 - Table input.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Set variables.0 - Set variable PRM_BATCH_ID to value [44]
+2026/09/16 09:41:41 - Write to log.0 - 
+2026/09/16 09:41:41 - Write to log.0 - ------------> Linenr 1------------------------------
+2026/09/16 09:41:41 - Write to log.0 - batch_id = 44
+2026/09/16 09:41:41 - Write to log.0 - 
+2026/09/16 09:41:41 - Write to log.0 - ====================
+2026/09/16 09:41:41 - Set variables.0 - Finished after 1 rows.
+2026/09/16 09:41:41 - Set variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Write to log.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - p00_create_batch - Pipeline duration : 0.047 seconds [  0.047"" ]
+2026/09/16 09:41:41 - p00_create_batch - Execution finished on a local pipeline engine with run configuration 'local'
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [05 Create Batch] (result=[true])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [06 Execute Dataset Pipeline]
+2026/09/16 09:41:41 - 06 Execute Dataset Pipeline - Using run configuration [local]
+2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Execution started for pipeline [pl_raw_HIS_EXAM]
+2026/09/16 09:41:41 - Get variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - 02 Read Watermark.0 - Finished reading query, closing connection.
+2026/09/16 09:41:41 - 01 Read Dataset Metadata.0 - Finished reading query, closing connection.
+2026/09/16 09:41:41 - 02 Read Watermark.0 - Finished processing (I=1, O=0, R=0, W=2, U=0, E=0)
+2026/09/16 09:41:41 - 01 Read Dataset Metadata.0 - Finished processing (I=1, O=0, R=0, W=2, U=0, E=0)
+2026/09/16 09:41:41 - 01A Validate Dataset Metadata.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Select values 3.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - 03 Read Ingestion.0 - Finished processing (I=1, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Select values 2.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Merge join.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Merge join 2.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Write to log.0 - 
+2026/09/16 09:41:41 - Write to log.0 - ------------> Linenr 1------------------------------
+2026/09/16 09:41:41 - Write to log.0 - dataset_id = 1
+2026/09/16 09:41:41 - Write to log.0 - dataset_code = HIS_EXAM
+2026/09/16 09:41:41 - Write to log.0 - source_instance_id = 1
+2026/09/16 09:41:41 - Write to log.0 - source_schema = VIMES
+2026/09/16 09:41:41 - Write to log.0 - source_object = HMS_EXAM
+2026/09/16 09:41:41 - Write to log.0 - refresh_mode = INCREMENTAL
+2026/09/16 09:41:41 - Write to log.0 - ingestion_config = {
+2026/09/16 09:41:41 - Write to log.0 -   ""schedule"" : {
+2026/09/16 09:41:41 - Write to log.0 -     ""frequency_minutes"" : 15
+2026/09/16 09:41:41 - Write to log.0 -   },
+2026/09/16 09:41:41 - Write to log.0 -   ""source_key"" : [ ""HE_RECEPTIDX"" ],
+2026/09/16 09:41:41 - Write to log.0 -   ""target_key"" : [ ""exam_id"" ],
+2026/09/16 09:41:41 - Write to log.0 -   ""incremental"" : {
+2026/09/16 09:41:41 - Write to log.0 -     ""strategy"" : ""WATERMARK"",
+2026/09/16 09:41:41 - Write to log.0 -     ""cursor_column"" : ""HE_UPDATEDDATE"",
+2026/09/16 09:41:41 - Write to log.0 -     ""overlap_minutes"" : 5,
+2026/09/16 09:41:41 - Write to log.0 -     ""cursor_data_type"" : ""TIMESTAMP""
+2026/09/16 09:41:41 - Write to log.0 -   },
+2026/09/16 09:41:41 - Write to log.0 -   ""delete_strategy"" : ""NONE""
+2026/09/16 09:41:41 - Write to log.0 - }
+2026/09/16 09:41:41 - Write to log.0 - watermark_id = 1
+2026/09/16 09:41:41 - Write to log.0 - watermark_type = TIMESTAMP
+2026/09/16 09:41:41 - Write to log.0 - watermark_column = HE_UPDATEDDATE
+2026/09/16 09:41:41 - Write to log.0 - last_value_timestamp = null
+2026/09/16 09:41:41 - Write to log.0 - last_value_numeric = null
+2026/09/16 09:41:41 - Write to log.0 - last_value_text = null
+2026/09/16 09:41:41 - Write to log.0 - last_batch_id = null
+2026/09/16 09:41:41 - Write to log.0 - initialized_at = null
+2026/09/16 09:41:41 - Write to log.0 - 
+2026/09/16 09:41:41 - Write to log.0 - ====================
+2026/09/16 09:41:41 - Select values.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Write to log.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - Merge join 2 2.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
+2026/09/16 09:41:41 - JavaScript.0 - ECMAScript language level set to ES6.
+2026/09/16 09:41:41 - JavaScript.0 - Optimization level set to 9.
+2026/09/16 09:41:41 - Select values 4.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - JavaScript.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Pipeline duration : 0.68 seconds [  0.680"" ]
+2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Execution finished on a local pipeline engine with run configuration 'local'
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [06 Execute Dataset Pipeline] (result=[true])
+2026/09/16 09:41:41 - w01_his_ingestion - Starting action [02 Abort workflow]
+2026/09/16 09:41:41 - 02 Abort workflow - ERROR: Terminate as SKIPPED
+2026/09/16 09:41:41 - w01_his_ingestion - Stop workflow execution
+2026/09/16 09:41:41 - w01_his_ingestion - Finished action [02 Abort workflow] (result=[false])
+2026/09/16 09:41:41 - w01_his_ingestion - Workflow execution finished
+2026/09/16 09:41:41 - w01_his_ingestion - Workflow duration : 0.874 seconds [  0.874"" ]";1;Stopped (with errors)
