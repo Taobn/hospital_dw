@@ -10,6 +10,9 @@ CREATE TABLE raw.ods_raw_exam (
 
     ingested_at             TIMESTAMP(6) WITHOUT TIME ZONE
                             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            
+    is_deleted              BOOLEAN NOT NULL DEFAULT FALSE,
+    deleted_at              TIMESTAMP(6),
 
     -- =========================================================
     -- SOURCE IDENTITY / LINKAGE
@@ -182,6 +185,12 @@ CREATE INDEX ix_raw_exam_department
 CREATE INDEX ix_raw_exam_forward_reception
     ON raw.ods_raw_exam (forward_reception_idx);
 
+CREATE INDEX ix_raw_exam_active_partial
+    ON raw.ods_raw_exam (
+        source_instance_id,
+        exam_id
+    )
+    WHERE is_deleted = FALSE;
 -- =============================================================
 -- COMMENTS
 -- =============================================================
@@ -205,8 +214,13 @@ COMMENT ON COLUMN raw.ods_raw_exam.ingested_at IS
     'ODS ingestion timestamp. This is not the source update timestamp.';
 
 COMMENT ON COLUMN raw.ods_raw_exam.batch_id IS
-    'ODS batch that most recently inserted or updated this RAW record.';
+    'ODS batch that most recently inserted, updated, or changed the lifecycle state of this RAW record.';
 
+COMMENT ON COLUMN raw.ods_raw_exam.is_deleted IS
+    'ODS-managed soft-delete flag. TRUE when the source record no longer exists in HIS and deletion has been detected by reconciliation or CDC.';
+
+COMMENT ON COLUMN raw.ods_raw_exam.deleted_at IS
+    'ODS timestamp when the source deletion was detected. NULL while the source record is active.';
 -- =============================================================
 -- GRANTS
 -- =============================================================

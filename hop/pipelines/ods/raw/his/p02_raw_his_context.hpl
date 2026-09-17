@@ -120,7 +120,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
         </conditions>
       </condition>
     </compare>
-    <send_true_to>03 Read Ingestion</send_true_to>
+    <send_true_to>03 Read Ingestion JSON</send_true_to>
     <send_false_to>Abort</send_false_to>
     <distribute>Y</distribute>
     <copies>1</copies>
@@ -250,160 +250,6 @@ if (mode == "FULL") {
     <attributes/>
   </transform>
   <transform>
-    <type>JsonNormalizeInput</type>
-    <name>03 Read Ingestion</name>
-    <include>N</include>
-    <include_field/>
-    <rownum>N</rownum>
-    <rownum_field/>
-    <limit>0</limit>
-    <valueField>ingestion_config</valueField>
-    <IsInFields>Y</IsInFields>
-    <IsAFile>N</IsAFile>
-    <addresultfile>N</addresultfile>
-    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
-    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
-    <readurl>N</readurl>
-    <removeSourceField>N</removeSourceField>
-    <recordPath>$</recordPath>
-    <fieldSeparator>.</fieldSeparator>
-    <maxFlattenDepth>-1</maxFlattenDepth>
-    <arrayHandling>STRINGIFY</arrayHandling>
-    <beyondDepthBehavior>STRINGIFY</beyondDepthBehavior>
-    <ignoreMissingField>Y</ignoreMissingField>
-    <files/>
-    <fields>
-      <field>
-        <name>business_date_key</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>business_date_key</path>
-      </field>
-      <field>
-        <name>delete_strategy</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>delete_strategy</path>
-      </field>
-      <field>
-        <name>cursor_column</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>incremental.cursor_column</path>
-      </field>
-      <field>
-        <name>cursor_data_type</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>incremental.cursor_data_type</path>
-      </field>
-      <field>
-        <name>overlap_minutes</name>
-        <length>-1</length>
-        <type>Integer</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>incremental.overlap_minutes</path>
-      </field>
-      <field>
-        <name>strategy</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>incremental.strategy</path>
-      </field>
-      <field>
-        <name>frequency_minutes</name>
-        <length>-1</length>
-        <type>Integer</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>schedule.frequency_minutes</path>
-      </field>
-      <field>
-        <name>source_key</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>source_key</path>
-      </field>
-      <field>
-        <name>target_key</name>
-        <length>-1</length>
-        <type>String</type>
-        <format/>
-        <trim_type>none</trim_type>
-        <precision>-1</precision>
-        <currency/>
-        <decimal/>
-        <group/>
-        <repeat>N</repeat>
-        <path>target_key</path>
-      </field>
-    </fields>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-    <GUI>
-      <xloc>256</xloc>
-      <yloc>176</yloc>
-    </GUI>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <attributes/>
-  </transform>
-  <transform>
     <type>SelectValues</type>
     <name>Select values Ingestion</name>
     <fields>
@@ -481,6 +327,24 @@ if (mode == "FULL") {
       </field>
       <field>
         <name>dataset_code</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>identity_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>identity_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>dataset_id</name>
         <rename/>
         <length>-2</length>
         <precision>-2</precision>
@@ -659,6 +523,12 @@ if (mode == "FULL") {
     <name>Select values calculate</name>
     <fields>
       <field>
+        <name>dataset_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
         <name>source_instance_id</name>
         <rename/>
         <length>-2</length>
@@ -766,6 +636,18 @@ if (mode == "FULL") {
         <length>-2</length>
         <precision>-2</precision>
       </field>
+      <field>
+        <name>identity_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>identity_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
       <select_unspecified>N</select_unspecified>
     </fields>
     <distribute>N</distribute>
@@ -803,6 +685,12 @@ if (mode == "FULL") {
     <type>SelectValues</type>
     <name>Select values</name>
     <fields>
+      <field>
+        <name>dataset_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
       <field>
         <name>source_instance_id</name>
         <rename/>
@@ -857,6 +745,24 @@ if (mode == "FULL") {
         <length>-2</length>
         <precision>-2</precision>
       </field>
+      <field>
+        <name>source_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>identity_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>identity_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
       <select_unspecified>N</select_unspecified>
     </fields>
     <distribute>Y</distribute>
@@ -875,6 +781,12 @@ if (mode == "FULL") {
     <type>SetVariable</type>
     <name>06 Set HIS Context and SQL</name>
     <fields>
+      <field>
+        <field_name>dataset_id</field_name>
+        <variable_name>PRM_DATASET_ID</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
       <field>
         <field_name>source_instance_id</field_name>
         <variable_name>PRM_SOURCE_INSTANCE_ID</variable_name>
@@ -908,6 +820,24 @@ if (mode == "FULL") {
       <field>
         <field_name>sql_oracle</field_name>
         <variable_name>PRM_SQL_ORACLE</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>source_key</field_name>
+        <variable_name>PRM_SOURCE_KEY</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>identity_key</field_name>
+        <variable_name>PRM_IDENTITY_KEY</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>identity_key_1</field_name>
+        <variable_name>PRM_IDENTITY_KEY_1</variable_name>
         <variable_type>PARENT_WORKFLOW</variable_type>
         <default_value/>
       </field>
@@ -999,15 +929,186 @@ else {
     </partitioning>
     <attributes/>
   </transform>
+  <transform>
+    <type>JsonInput</type>
+    <name>03 Read Ingestion JSON</name>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <rownum_field/>
+    <limit>0</limit>
+    <valueField>ingestion_config</valueField>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <addresultfile>N</addresultfile>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <defaultPathLeafToNull>Y</defaultPathLeafToNull>
+    <files/>
+    <fields>
+      <field>
+        <name>business_date_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.business_date_key</path>
+      </field>
+      <field>
+        <name>delete_strategy</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.delete_strategy</path>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.incremental.cursor_column</path>
+      </field>
+      <field>
+        <name>cursor_data_type</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.incremental.cursor_data_type</path>
+      </field>
+      <field>
+        <name>overlap_minutes</name>
+        <length>-1</length>
+        <type>Integer</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.incremental.overlap_minutes</path>
+      </field>
+      <field>
+        <name>strategy</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.incremental.strategy</path>
+      </field>
+      <field>
+        <name>frequency_minutes</name>
+        <length>-1</length>
+        <type>Integer</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.schedule.frequency_minutes</path>
+      </field>
+      <field>
+        <name>source_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.source_key[*]</path>
+      </field>
+      <field>
+        <name>target_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.target_key[*]</path>
+      </field>
+      <field>
+        <name>identity_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.identity_key[0]</path>
+      </field>
+      <field>
+        <name>identity_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.identity_key[1]</path>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>256</xloc>
+      <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
   <order>
     <hop>
       <from>01 Read Dataset Metadata</from>
       <to>01A Validate Dataset Metadata</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>03 Read Ingestion</from>
-      <to>Select values Ingestion</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -1033,11 +1134,6 @@ else {
     <hop>
       <from>Select values calculate</from>
       <to>04 Calculate Extraction Window</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>01A Validate Dataset Metadata</from>
-      <to>03 Read Ingestion</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -1068,6 +1164,16 @@ else {
     <hop>
       <from>05 Extraction SQL</from>
       <to>06 Set HIS Context and SQL</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>01A Validate Dataset Metadata</from>
+      <to>03 Read Ingestion JSON</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>03 Read Ingestion JSON</from>
+      <to>Select values Ingestion</to>
       <enabled>Y</enabled>
     </hop>
   </order>
