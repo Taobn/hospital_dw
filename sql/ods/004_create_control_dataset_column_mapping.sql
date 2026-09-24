@@ -36,6 +36,8 @@ CREATE TABLE control.dataset_column_mapping (
 
     ordinal_position
         INTEGER,
+    
+    storage_group VARCHAR(30) NOT NULL DEFAULT 'CORE',
 
     is_nullable
         BOOLEAN,
@@ -93,6 +95,10 @@ CREATE TABLE control.dataset_column_mapping (
             ordinal_position IS NULL
             OR ordinal_position > 0
         )
+),
+    CONSTRAINT ck_dataset_column_mapping_storage_group
+	CHECK (storage_group IN ('CORE', 'EXTENDED'
+	)
 );
 
 COMMENT ON TABLE control.dataset_column_mapping IS

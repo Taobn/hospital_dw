@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <pipeline_version/>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <pipeline_type>Normal</pipeline_type>
+    <pipeline_status>0</pipeline_status>
+    <parameters>
+      <parameter>
+        <name>PRM_DATASET_ID</name>
+        <description/>
+        <default_value>1</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_EXTENDED</name>
+        <description/>
+        <default_value>ods_raw_exam_extended</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT</name>
+        <description/>
+        <default_value>ods_raw_exam</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_KEY</name>
+        <description/>
+        <default_value>exam_id</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_SCHEMA</name>
+        <description/>
+        <default_value>raw</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_CURSOR_COLUMN</name>
+        <description/>
+        <default_value>HE_UPDATEDDATE</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_BATCH_ID</name>
+        <description/>
+        <default_value>113</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_STAGE</name>
+        <description/>
+        <default_value>ods_raw_exam_stage</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_EXTENDED_STAGE</name>
+        <description/>
+        <default_value>ods_raw_exam_extended_stage</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_KEY_1</name>
+        <description/>
+        <default_value>null</default_value>
+      </parameter>
+    </parameters>
+    <name>p05_raw_his_etl_upsert</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <created_user>-</created_user>
+    <modified_user>-</modified_user>
+    <created_date>2026/09/23 10:56:32.493</created_date>
+    <modified_date>2026/09/23 10:56:32.493</modified_date>
+  </info>
+  <transform>
+    <type>TableInput</type>
+    <name>Core field mapping</name>
+    <sql>SELECT
+	target_field_name
+FROM
+	control.dataset_column_mapping
+WHERE
+	dataset_id = ${PRM_DATASET_ID}
+	AND target_layer = 'RAW'
+	AND storage_group = 'CORE'
+	
+ORDER BY ordinal_position</sql>
+    <limit/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>GetVariable</type>
+    <name>Get variables</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <variable>${PRM_SOURCE_INSTANCE_ID}</variable>
+        <type>Integer</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_schema</name>
+        <variable>${PRM_TARGET_SCHEMA}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_object</name>
+        <variable>${PRM_TARGET_OBJECT}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_object_stage</name>
+        <variable>${PRM_TARGET_OBJECT_STAGE}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_object_extended</name>
+        <variable>${PRM_TARGET_OBJECT_EXTENDED}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_object_extended_stage</name>
+        <variable>${PRM_TARGET_OBJECT_EXTENDED_STAGE}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <variable>${PRM_BATCH_ID}</variable>
+        <type>Integer</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_key</name>
+        <variable>${PRM_TARGET_KEY}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <variable>${PRM_CURSOR_COLUMN}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>target_key_1</name>
+        <variable>${PRM_TARGET_KEY_1}</variable>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>JoinRows</type>
+    <name>Core Join rows</name>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <cache_size>500</cache_size>
+    <main>Core field mapping</main>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <operator>-</operator>
+        <function>=</function>
+        <conditions/>
+      </condition>
+    </compare>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>GroupBy</type>
+    <name>Core Group by Batch</name>
+    <all_rows>N</all_rows>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>grp</prefix>
+    <ignore_aggregate>N</ignore_aggregate>
+    <group>
+      <field>
+        <name>source_instance_id</name>
+      </field>
+      <field>
+        <name>target_schema</name>
+      </field>
+      <field>
+        <name>target_object</name>
+      </field>
+      <field>
+        <name>target_object_stage</name>
+      </field>
+      <field>
+        <name>batch_id</name>
+      </field>
+      <field>
+        <name>target_key</name>
+      </field>
+      <field>
+        <name>cursor_column</name>
+      </field>
+      <field>
+        <name>target_key_1</name>
+      </field>
+    </group>
+    <fields>
+      <field>
+        <aggregate>cols</aggregate>
+        <subject>target_field_name</subject>
+        <type>CONCAT_STRING</type>
+        <valuefield>,</valuefield>
+        <orderfield/>
+      </field>
+    </fields>
+    <add_linenr>N</add_linenr>
+    <linenr_fieldname/>
+    <give_back_row>N</give_back_row>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>JavaScript SQL Core Upsert</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+// tách danh sách cột
+var colsArr = cols.split(",");
+var updatesArr;
+
+if (target_key_1 != "null") {
+    updatesArr = colsArr.filter(function(c) {
+        c = c.trim();
+        return c != target_key &amp;&amp;
+               c != target_key_1;
+    });
+} else {
+    updatesArr = colsArr.filter(function(c) {
+        c = c.trim();
+        return c != target_key;
+    });
+}
+
+var selectCols = colsArr.map(c => "s." + c).join(",\n    ");
+var insertCols = colsArr.join(",\n    ");
+var updateSet = updatesArr.map(c => c + " = EXCLUDED." + c).join(",\n    ");
+
+var whereUpdate =
+    target_schema + "." + target_object +
+    ".updated_date &lt; EXCLUDED.updated_date";
+
+var target_key_composite1;
+var target_key_composite2;
+var target_key_composite3;
+var target_key_composite4;
+	if (target_key_1 != "null") {
+		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"+
+								"  AND s." + target_key_1 + " IS NOT NULL\n"
+		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n" +
+								"        AND d." + target_key_1 + " = s." + target_key_1 + "\n"
+		target_key_composite3 = "d." + target_key + ",\n" +
+								"        d." + target_key_1 + "\n"
+		target_key_composite4 = target_key + "," + target_key_1
+	} else {
+		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"
+		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n"
+		target_key_composite3 = "d." + target_key + "\n"
+		target_key_composite4 = target_key
+	}
+
+var conflictCols = "(source_instance_id," + target_key_composite4 + ")";	
+
+var sql =
+    "INSERT INTO " + target_schema + "." + target_object + " (\n" +
+	"    source_instance_id," + "\n" +
+	"    batch_id," + "\n" +
+	"    ingested_at," + "\n" +
+	"    is_deleted," + "\n" +
+	"    deleted_at," + "\n" +
+	"    " + insertCols + "\n" +
+    ")\n" +
+    "SELECT\n" +
+	"    s.source_instance_id," + "\n" +
+	"    s.batch_id," + "\n" +
+	"    CURRENT_TIMESTAMP," + "\n" +
+	"    s.is_deleted," + "\n" +
+	"    s.deleted_at," + "\n" +
+    "    " + selectCols + "\n" +
+    "FROM " + target_schema + "." + target_object_stage + " s\n" +
+    "WHERE s.batch_id = " + batch_id + "\n" +
+    "  AND " + target_key_composite1 +
+    "  AND s.updated_date IS NOT NULL\n" +
+    "  AND NOT EXISTS (\n" +
+    "      SELECT 1\n" +
+    "      FROM " + target_schema + "." + target_object_stage + " d\n" +
+    "      WHERE d.batch_id = s.batch_id\n" +
+    "        AND d.source_instance_id = s.source_instance_id\n" +
+    "        AND " + target_key_composite2 +
+    "      GROUP BY " + "\n" +
+	"        d.source_instance_id," + "\n" +
+	"        " + target_key_composite3 +
+    "      HAVING COUNT(*) > 1\n" +
+    "  )\n" +
+    "ON CONFLICT " + conflictCols + "\n" +
+    "DO UPDATE SET\n" +
+	"    batch_id = EXCLUDED.batch_id," + "\n" +
+    "    is_deleted = EXCLUDED.is_deleted," + "\n" +
+    "    deleted_at = EXCLUDED.deleted_at," + "\n" +
+    "    " + updateSet + "\n" +
+    "WHERE " + whereUpdate + "\n";</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql</name>
+        <rename>ods_sql_upsert</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values</name>
+    <fields>
+      <field>
+        <name>ods_sql_upsert</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>928</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSqlRow</type>
+    <name>Execute row SQL script Core</name>
+    <sql_field>ods_sql_upsert</sql_field>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <commit>1</commit>
+    <sqlFromfile>N</sqlFromfile>
+    <sendOneStatement>Y</sendOneStatement>
+    <connection>ods_postgres</connection>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1104</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Extended field mapping</name>
+    <sql>SELECT
+    source_field_name,
+    target_field_name
+FROM
+    control.dataset_column_mapping
+WHERE
+    dataset_id = ${PRM_DATASET_ID}
+    AND target_layer = 'RAW'
+    AND (
+        (storage_group = 'CORE' AND target_field_name = '${PRM_TARGET_KEY}')
+        OR  
+        (storage_group = 'CORE' AND source_field_name = '${PRM_CURSOR_COLUMN}')
+        OR  
+        storage_group = 'EXTENDED'
+    )
+ORDER BY 
+    ordinal_position;
+</sql>
+    <limit/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>JoinRows</type>
+    <name>Extended Join rows</name>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <cache_size>500</cache_size>
+    <main>Extended field mapping</main>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <operator>-</operator>
+        <function>=</function>
+        <conditions/>
+      </condition>
+    </compare>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>GroupBy</type>
+    <name>Extended Group by Batch</name>
+    <all_rows>N</all_rows>
+    <directory>${java.io.tmpdir}</directory>
+    <prefix>grp</prefix>
+    <ignore_aggregate>N</ignore_aggregate>
+    <group>
+      <field>
+        <name>source_instance_id</name>
+      </field>
+      <field>
+        <name>target_schema</name>
+      </field>
+      <field>
+        <name>target_object</name>
+      </field>
+      <field>
+        <name>target_object_stage</name>
+      </field>
+      <field>
+        <name>target_object_extended</name>
+      </field>
+      <field>
+        <name>target_object_extended_stage</name>
+      </field>
+      <field>
+        <name>batch_id</name>
+      </field>
+      <field>
+        <name>target_key</name>
+      </field>
+      <field>
+        <name>cursor_column</name>
+      </field>
+      <field>
+        <name>target_key_1</name>
+      </field>
+    </group>
+    <fields>
+      <field>
+        <aggregate>cols</aggregate>
+        <subject>target_field_name</subject>
+        <type>CONCAT_STRING</type>
+        <valuefield>,</valuefield>
+        <orderfield/>
+      </field>
+    </fields>
+    <add_linenr>N</add_linenr>
+    <linenr_fieldname/>
+    <give_back_row>N</give_back_row>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>JavaScript SQL Extended Upsert</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+// tách danh sách cột
+var colsArr = cols.split(",");
+var updatesArr;
+
+if (target_key_1 != "null") {
+    updatesArr = colsArr.filter(function(c) {
+        c = c.trim();
+        return c != target_key &amp;&amp;
+               c != target_key_1;
+    });
+} else {
+    updatesArr = colsArr.filter(function(c) {
+        c = c.trim();
+        return c != target_key;
+    });
+}
+
+var selectCols = colsArr.map(c => "s." + c).join(",\n    ");
+var insertCols = colsArr.join(",\n    ");
+var updateSet = updatesArr.map(c => c + " = EXCLUDED." + c).join(",\n    ");
+
+var whereUpdate =
+    target_schema + "." + target_object_extended +
+    ".updated_date &lt; EXCLUDED.updated_date";
+
+var target_key_composite1;
+var target_key_composite2;
+var target_key_composite3;
+var target_key_composite4;
+	if (target_key_1 != "null") {
+		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"+
+								"  AND s." + target_key_1 + " IS NOT NULL\n"
+		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n" +
+								"        AND d." + target_key_1 + " = s." + target_key_1 + "\n"
+		target_key_composite3 = "d." + target_key + ",\n" +
+								"        d." + target_key_1 + "\n"
+		target_key_composite4 = target_key + "," + target_key_1
+	} else {
+		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"
+		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n"
+		target_key_composite3 = "d." + target_key + "\n"
+		target_key_composite4 = target_key
+	}
+
+var conflictCols = "(source_instance_id," + target_key_composite4 + ")";	
+
+var sql =
+    "INSERT INTO " + target_schema + "." + target_object_extended + " (\n" +
+	"    source_instance_id," + "\n" +
+	"    batch_id," + "\n" +
+	"    ingested_at," + "\n" +
+	"    is_deleted," + "\n" +
+	"    deleted_at," + "\n" +
+	"    " + insertCols + "\n" +
+    ")\n" +
+    "SELECT\n" +
+	"    s.source_instance_id," + "\n" +
+	"    s.batch_id," + "\n" +
+	"    CURRENT_TIMESTAMP," + "\n" +
+	"    s.is_deleted," + "\n" +
+	"    s.deleted_at," + "\n" +
+    "    " + selectCols + "\n" +
+    "FROM " + target_schema + "." + target_object_extended_stage + " s\n" +
+    "WHERE s.batch_id = " + batch_id + "\n" +
+    "  AND " + target_key_composite1 +
+    "  AND s.updated_date IS NOT NULL\n" +
+    "  AND NOT EXISTS (\n" +
+    "      SELECT 1\n" +
+    "      FROM " + target_schema + "." + target_object_extended_stage + " d\n" +
+    "      WHERE d.batch_id = s.batch_id\n" +
+    "        AND d.source_instance_id = s.source_instance_id\n" +
+    "        AND " + target_key_composite2 +
+    "      GROUP BY " + "\n" +
+	"        d.source_instance_id," + "\n" +
+	"        " + target_key_composite3 +
+    "      HAVING COUNT(*) > 1\n" +
+    "  )\n" +
+    "ON CONFLICT " + conflictCols + "\n" +
+    "DO UPDATE SET\n" +
+	"    batch_id = EXCLUDED.batch_id," + "\n" +
+    "    is_deleted = EXCLUDED.is_deleted," + "\n" +
+    "    deleted_at = EXCLUDED.deleted_at," + "\n" +
+    "    " + updateSet + "\n" +
+    "WHERE " + whereUpdate + "\n";</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql</name>
+        <rename>ods_sql_upsert_extended</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values 2</name>
+    <fields>
+      <field>
+        <name>ods_sql_upsert_extended</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>928</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSqlRow</type>
+    <name>Execute row SQL script Extended</name>
+    <sql_field>ods_sql_upsert_extended</sql_field>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <commit>1</commit>
+    <sqlFromfile>N</sqlFromfile>
+    <sendOneStatement>Y</sendOneStatement>
+    <connection>ods_postgres</connection>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1104</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <order>
+    <hop>
+      <from>Get variables</from>
+      <to>Core Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Core field mapping</from>
+      <to>Core Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Core Join rows</from>
+      <to>Core Group by Batch</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Core Group by Batch</from>
+      <to>JavaScript SQL Core Upsert</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JavaScript SQL Core Upsert</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>Execute row SQL script Core</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extended Join rows</from>
+      <to>Extended Group by Batch</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extended Group by Batch</from>
+      <to>JavaScript SQL Extended Upsert</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>JavaScript SQL Extended Upsert</from>
+      <to>Select values 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values 2</from>
+      <to>Execute row SQL script Extended</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables</from>
+      <to>Extended Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extended field mapping</from>
+      <to>Extended Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <notepads/>
+  <attributes/>
+  <transform_error_handling/>
+</pipeline>

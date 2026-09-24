@@ -314,7 +314,19 @@ if (mode == "FULL") {
         <precision>-2</precision>
       </field>
       <field>
+        <name>source_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
         <name>target_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_key_1</name>
         <rename/>
         <length>-2</length>
         <precision>-2</precision>
@@ -613,7 +625,19 @@ if (mode == "FULL") {
         <precision>-2</precision>
       </field>
       <field>
+        <name>source_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
         <name>target_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_key_1</name>
         <rename/>
         <length>-2</length>
         <precision>-2</precision>
@@ -752,6 +776,24 @@ if (mode == "FULL") {
         <precision>-2</precision>
       </field>
       <field>
+        <name>source_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_schema</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_object</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
         <name>identity_key</name>
         <rename/>
         <length>-2</length>
@@ -763,12 +805,24 @@ if (mode == "FULL") {
         <length>-2</length>
         <precision>-2</precision>
       </field>
+      <field>
+        <name>target_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>target_key_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>1344</xloc>
+      <xloc>1456</xloc>
       <yloc>304</yloc>
     </GUI>
     <partitioning>
@@ -830,6 +884,12 @@ if (mode == "FULL") {
         <default_value/>
       </field>
       <field>
+        <field_name>source_key_composite</field_name>
+        <variable_name>PRM_SOURCE_KEY_1</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
         <field_name>identity_key</field_name>
         <variable_name>PRM_IDENTITY_KEY</variable_name>
         <variable_type>PARENT_WORKFLOW</variable_type>
@@ -841,13 +901,73 @@ if (mode == "FULL") {
         <variable_type>PARENT_WORKFLOW</variable_type>
         <default_value/>
       </field>
+      <field>
+        <field_name>target_schema</field_name>
+        <variable_name>PRM_TARGET_SCHEMA</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_object_reject</field_name>
+        <variable_name>PRM_TARGET_OBJECT_REJECT</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_object_stage</field_name>
+        <variable_name>PRM_TARGET_OBJECT_STAGE</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_object_extended_stage</field_name>
+        <variable_name>PRM_TARGET_OBJECT_EXTENDED_STAGE</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_object</field_name>
+        <variable_name>PRM_TARGET_OBJECT</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_object_extended</field_name>
+        <variable_name>PRM_TARGET_OBJECT_EXTENDED</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_key</field_name>
+        <variable_name>PRM_TARGET_KEY</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>target_key_1</field_name>
+        <variable_name>PRM_TARGET_KEY_1</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>sql_read_duplicate_batch</field_name>
+        <variable_name>PRM_ODS_SQL_READ_DUPLICATE</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
+      <field>
+        <field_name>sql_return_etl_statistics</field_name>
+        <variable_name>PRM_SQL_RETURN_ETL_STATISTICS</variable_name>
+        <variable_type>PARENT_WORKFLOW</variable_type>
+        <default_value/>
+      </field>
     </fields>
     <use_formatting>Y</use_formatting>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>1664</xloc>
-      <yloc>304</yloc>
+      <xloc>1008</xloc>
+      <yloc>416</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -866,10 +986,10 @@ if (mode == "FULL") {
 
 // FULL extraction
 if (extraction_mode == "FULL") {
-    sql =   "SELECT " + source_instance_id + " AS runtime_source_instance_id, "
-					  +	batch_id + " AS runtime_batch_id, "
-					  + "a.*" +
-			" FROM " + source_schema + "." + source_object + " a" +
+    sql =   "SELECT " + source_instance_id + " AS runtime_source_instance_id, " + "\n"
+					  +	batch_id + " AS runtime_batch_id, "+ "\n"
+					  + "a.*" + "\n" +
+			" FROM " + source_schema + "." + source_object + " a" + "\n" +
 			" WHERE ROWNUM &lt;= 10";
 }
 
@@ -878,30 +998,178 @@ else {
 
     if (cursor_data_type == "TIMESTAMP") {
         sql =
-            "SELECT " + source_instance_id + " AS runtime_source_instance_id, "
-					  +	batch_id + " AS runtime_batch_id, "
-					  + "a.*" +
-			" FROM " + source_schema + "." + source_object + " a" +
-            " WHERE a." + cursor_column +
-            " > TO_TIMESTAMP('" + effective_from + "', 'YYYY-MM-DD HH24:MI:SS')" +
+            "SELECT " + source_instance_id + " AS runtime_source_instance_id, " + "\n"
+					  +	batch_id + " AS runtime_batch_id, " + "\n"
+					  + "a.*" + "\n" +
+			" FROM " + source_schema + "." + source_object + " a" + "\n" + 
+            " WHERE a." + cursor_column + "\n" +
+            " > TO_TIMESTAMP('" + effective_from + "', 'YYYY-MM-DD HH24:MI:SS')" + "\n" +
 			" AND ROWNUM &lt;= 10";
     }
 
     else if (cursor_data_type == "NUMERIC") {
         sql =
-            "SELECT * FROM " + source_schema + "." + source_object +
-            " WHERE " + cursor_column + " > " + effective_from +
+            "SELECT * FROM " + source_schema + "." + source_object + "\n" +
+            " WHERE " + cursor_column + " > " + effective_from + "\n" +
 			" AND ROWNUM &lt;= 10";
     }
 
     else if (cursor_data_type == "TEXT") {
         sql =
-            "SELECT * FROM " + source_schema + "." + source_object +
-            " WHERE " + cursor_column + " > '" + effective_from + "'" +
+            "SELECT * FROM " + source_schema + "." + source_object + "\n" +
+            " WHERE " + cursor_column + " > '" + effective_from + "'"  + "\n" +
 			" AND ROWNUM &lt;= 10";
     }
 }
 
+var target_object_stage          = target_object ? target_object + "_stage" : null;
+var target_object_reject         = target_object ? target_object + "_reject" : null;
+var target_object_extended_stage = target_object ? target_object + "_extended_stage" : null;
+var target_object_extended        = target_object ? target_object + "_extended" : null;
+
+var source_key_composite;
+
+// Kiểm tra nếu source_key_1 có giá trị thực sự (khác null, khác chuỗi rỗng và khác khoảng trắng)
+	if (source_key_1 != "null") {
+    	source_key_composite = source_key_1;
+	} else {
+    	source_key_composite = source_key; 
+	}
+
+var target_key_composite1;
+var target_key_composite2;
+var target_key_composite3;
+var source_key_composite;
+	if (target_key_1 != "null") {
+		target_key_composite1 = "s." + target_key +","+ "\n" +"   s." + target_key_1 +","
+		target_key_composite2 = target_key +","+ "\n" + "        " + target_key_1
+		target_key_composite3 = "AND d." + target_key + " = s." + target_key +  "\n" +
+								"    AND d." + target_key_1 + " = s." + target_key_1
+		source_key_composite = source_key + "; " + source_key_1
+	} else {
+		target_key_composite1 = "s." + target_key +","
+		target_key_composite2 = target_key
+		target_key_composite3 = "AND d." + target_key + " = s." + target_key
+		source_key_composite = source_key
+	}	
+
+var sql_read_duplicate_batch;
+
+	sql_read_duplicate_batch = 
+	"SELECT " + "\n" +
+    "   s.source_instance_id," + "\n" +
+	"   s.batch_id," + "\n" +
+    "   CURRENT_TIMESTAMP AS rejected_at," + "\n" +
+    "   "+target_key_composite1 + "\n" +
+	"   s." + target_identity_key + "," + "\n" +
+	"   s." + target_business_date_key + "," + "\n" +
+	"   s.updated_date," + "\n" +
+    "   'VALIDATION_DUPLICATE_BUSINESS_KEY' AS error_code," + "\n" +
+	"   'Duplicate source key detected within the same extraction batch.' AS error_message," + "\n" +
+	"   '"+ source_key_composite +"' AS error_field," + "\n" +
+	"   'DUPLICATE_VALIDATION' AS rejection_stage" + "\n" +
+	"FROM raw." + target_object_stage + " s " + "\n" +
+	"JOIN ( " + "\n" +
+    "    SELECT " + "\n" +
+    "        source_instance_id," + "\n" +
+    "        batch_id," + "\n" +
+    "        "+target_key_composite2 + "\n" +
+    "    FROM raw."+ target_object_stage + "\n" +
+    "    WHERE batch_id = " + batch_id + "\n" +
+    "    GROUP BY " + "\n" +
+	"        source_instance_id," + "\n" +
+	"        batch_id," + "\n" +
+	"        "+target_key_composite2 + "\n" +
+    "        HAVING COUNT(*) > 1 " + "\n" +
+	"    ) d " + "\n" +
+	"    ON  d.source_instance_id = s.source_instance_id " + "\n" +
+	"    AND d.batch_id = s.batch_id " + "\n" +
+	"    "+target_key_composite3 + "\n" +
+	"WHERE s.batch_id = " + batch_id + ";"
+
+var sql_return_etl_statistics;
+	
+	sql_return_etl_statistics = 
+	"WITH stage_stats AS (" + "\n" +
+    "    SELECT" + "\n" +
+    "        COUNT(*) AS stage_row_count," + "\n" +
+	"        MIN(updated_date) AS min_updated_date," + "\n" +
+	"        MAX(updated_date) AS max_updated_date" + "\n" +
+	"    FROM " + target_schema + "." + target_object_stage + "\n" +
+	"    WHERE batch_id = " + batch_id + "\n" +
+	")," + "\n" +
+
+	"reject_stats AS (" + "\n" +
+	"    SELECT" + "\n" +
+	"        COUNT(*) AS total_rejected_row_count," + "\n" +
+	"        COUNT(*) FILTER (" + "\n" +
+	"            WHERE error_code IN (" + "\n" +
+	"                'VALIDATION_REQUIRED_FIELD'" + "\n" +
+	"            )" + "\n" +
+	"        ) AS initial_rejected_row_count," + "\n" +
+
+	"        COUNT(*) FILTER (" + "\n" +
+	"            WHERE error_code = 'VALIDATION_DUPLICATE_BUSINESS_KEY'" + "\n" +
+	"        ) AS duplicate_rejected_row_count" + "\n" +
+
+	"    FROM " + target_schema + "." + target_object_reject + "\n" +
+	"    WHERE batch_id = " + batch_id + "\n" +
+	")," + "\n" +
+
+	"calculated AS (" + "\n" +
+	"    SELECT" + "\n" +
+	"        " + batch_id + "::BIGINT AS batch_id," + "\n" +
+
+	"        s.stage_row_count," + "\n" +
+
+	"        r.initial_rejected_row_count," + "\n" +
+	"        r.duplicate_rejected_row_count," + "\n" +
+	"        r.total_rejected_row_count,"  + "\n" +
+
+	"        s.stage_row_count" + "\n" +
+	"           - r.duplicate_rejected_row_count" + "\n" +
+	"           AS accepted_row_count," + "\n" +
+
+	"        s.stage_row_count" + "\n" +
+	"            + r.initial_rejected_row_count" + "\n" +
+	"            AS source_row_count," + "\n" +
+
+	"        s.min_updated_date," + "\n" +
+	"        s.max_updated_date"  + "\n" +
+
+	"    FROM stage_stats s" + "\n" +
+	"    CROSS JOIN reject_stats r" + "\n" +
+	")" + "\n" +
+
+	"SELECT" + "\n" +
+	"    c.*," + "\n" +
+
+	"    CASE" + "\n" +
+	"        WHEN c.source_row_count" + "\n" +
+	"             =" + "\n" +
+	"             c.accepted_row_count" + "\n" +
+	"             + c.total_rejected_row_count" + "\n" +
+	"        THEN 'PASS'" + "\n" +
+	"       ELSE 'FAIL'" + "\n" +
+	"   END AS statistics_status" + "\n" +
+
+	"FROM calculated c;";
+
+var sql_delete_stage;
+	sql_delete_stage =
+		"DELETE FROM raw." + target_object_stage + " s" + "\n" +
+		" USING control.batch b" + "\n" +
+		" WHERE s.batch_id = b.batch_id" + "\n" +
+	  	" AND b.status = 'SUCCESS'" + "\n" +
+		" AND b.completed_at &lt; CURRENT_TIMESTAMP - INTERVAL '14 days';"
+
+var sql_delete_extended_stage;
+	sql_delete_extended_stage =
+		"DELETE FROM raw." + target_object_extended_stage + " s" + "\n" +
+		" USING control.batch b" + "\n" +
+		" WHERE s.batch_id = b.batch_id" + "\n" +
+	  	" AND b.status = 'SUCCESS'" + "\n" +
+		" AND b.completed_at &lt; CURRENT_TIMESTAMP - INTERVAL '14 days';"
 </jsScript_script>
       </jsScript>
     </jsScripts>
@@ -914,14 +1182,86 @@ else {
         <precision>-1</precision>
         <replace>N</replace>
       </field>
+      <field>
+        <name>target_object_stage</name>
+        <rename>target_object_stage</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>target_object_reject</name>
+        <rename>target_object_reject</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>target_object_extended_stage</name>
+        <rename>target_object_extended_stage</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>target_object_extended</name>
+        <rename>target_object_extended</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>source_key_composite</name>
+        <rename>source_key_composite</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>sql_read_duplicate_batch</name>
+        <rename>sql_read_duplicate_batch</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>sql_return_etl_statistics</name>
+        <rename>sql_return_etl_statistics</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>sql_delete_stage</name>
+        <rename>sql_delete_stage</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>sql_delete_extended_stage</name>
+        <rename>sql_delete_extended_stage</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
     </fields>
     <optimizationLevel>9</optimizationLevel>
     <languageVersion>ES6</languageVersion>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>1504</xloc>
-      <yloc>304</yloc>
+      <xloc>1216</xloc>
+      <yloc>416</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1051,7 +1391,20 @@ else {
         <decimal/>
         <group/>
         <repeat>N</repeat>
-        <path>$.source_key[*]</path>
+        <path>$.source_key[0]</path>
+      </field>
+      <field>
+        <name>source_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.source_key[1]</path>
       </field>
       <field>
         <name>target_key</name>
@@ -1064,7 +1417,20 @@ else {
         <decimal/>
         <group/>
         <repeat>N</repeat>
-        <path>$.target_key[*]</path>
+        <path>$.target_key[0]</path>
+      </field>
+      <field>
+        <name>target_key</name>
+        <length>-1</length>
+        <type>String</type>
+        <format/>
+        <trim_type>none</trim_type>
+        <precision>-1</precision>
+        <currency/>
+        <decimal/>
+        <group/>
+        <repeat>N</repeat>
+        <path>$.target_key[1]</path>
       </field>
       <field>
         <name>identity_key</name>
@@ -1098,6 +1464,195 @@ else {
     <GUI>
       <xloc>256</xloc>
       <yloc>176</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Target object mapping</name>
+    <sql>SELECT DISTINCT
+	a.dataset_id,
+	a.target_schema,
+	a.target_object
+FROM
+	control.dataset_column_mapping a
+LEFT JOIN
+	control.dataset b ON b.dataset_id = a.dataset_id
+WHERE
+	b.dataset_code = '${PRM_DATASET_CODE}'
+	AND a.is_nullable = FALSE
+	AND a.target_layer = 'RAW';</sql>
+    <limit>1</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1296</xloc>
+      <yloc>80</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>MergeJoin</type>
+    <name>Merge join 2</name>
+    <join_type>LEFT OUTER</join_type>
+    <transform1>04 Calculate Extraction Window</transform1>
+    <transform2>Target object mapping</transform2>
+    <keys_1>
+      <key>dataset_id</key>
+    </keys_1>
+    <keys_2>
+      <key>dataset_id</key>
+    </keys_2>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1296</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>DBLookup</type>
+    <name>Database lookup</name>
+    <connection>ods_postgres</connection>
+    <cache>N</cache>
+    <cache_size>0</cache_size>
+    <cache_load_all>N</cache_load_all>
+    <lookup>
+      <schema>control</schema>
+      <table>dataset_column_mapping</table>
+      <key>
+        <name>identity_key</name>
+        <name2/>
+        <condition>=</condition>
+        <field>source_field_name</field>
+      </key>
+      <value>
+        <name>target_field_name</name>
+        <rename>target_identity_key</rename>
+        <default/>
+        <type/>
+        <trim_type>none</trim_type>
+      </value>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>Y</eat_row_on_failure>
+    </lookup>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1456</xloc>
+      <yloc>416</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>DBLookup</type>
+    <name>Database lookup 2</name>
+    <connection>ods_postgres</connection>
+    <cache>N</cache>
+    <cache_size>0</cache_size>
+    <cache_load_all>N</cache_load_all>
+    <lookup>
+      <schema>control</schema>
+      <table>dataset_column_mapping</table>
+      <key>
+        <name>business_date_key</name>
+        <name2/>
+        <condition>=</condition>
+        <field>source_field_name</field>
+      </key>
+      <value>
+        <name>target_field_name</name>
+        <rename>target_business_date_key</rename>
+        <default/>
+        <type/>
+        <trim_type>none</trim_type>
+      </value>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>Y</eat_row_on_failure>
+    </lookup>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1584</xloc>
+      <yloc>496</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values 2</name>
+    <fields>
+      <field>
+        <name>dataset_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>business_date_key</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1584</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>MergeJoin</type>
+    <name>Merge join 3</name>
+    <join_type>LEFT OUTER</join_type>
+    <transform1>Database lookup</transform1>
+    <transform2>Database lookup 2</transform2>
+    <keys_1>
+      <key>dataset_id</key>
+    </keys_1>
+    <keys_2>
+      <key>dataset_id</key>
+    </keys_2>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1456</xloc>
+      <yloc>496</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1152,16 +1707,6 @@ else {
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>04 Calculate Extraction Window</from>
-      <to>Select values</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Select values</from>
-      <to>05 Extraction SQL</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>05 Extraction SQL</from>
       <to>06 Set HIS Context and SQL</to>
       <enabled>Y</enabled>
@@ -1174,6 +1719,51 @@ else {
     <hop>
       <from>03 Read Ingestion JSON</from>
       <to>Select values Ingestion</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Target object mapping</from>
+      <to>Merge join 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>04 Calculate Extraction Window</from>
+      <to>Merge join 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join 2</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>Database lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>Select values 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values 2</from>
+      <to>Database lookup 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database lookup 2</from>
+      <to>Merge join 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database lookup</from>
+      <to>Merge join 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join 3</from>
+      <to>05 Extraction SQL</to>
       <enabled>Y</enabled>
     </hop>
   </order>

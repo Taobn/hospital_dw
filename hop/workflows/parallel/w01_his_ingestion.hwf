@@ -23,7 +23,7 @@
     <parameter>
       <name>PRM_DATASET_CODE</name>
       <description/>
-      <default_value>HIS_EXAM</default_value>
+      <default_value/>
     </parameter>
   </parameters>
   <actions>
@@ -68,7 +68,7 @@
       <name>05 Create Batch</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>944</xloc>
+      <xloc>1088</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -89,8 +89,8 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>SQL</type>
       <attributes/>
-      <xloc>736</xloc>
-      <yloc>160</yloc>
+      <xloc>800</xloc>
+      <yloc>176</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
@@ -106,7 +106,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>SQL</type>
       <attributes/>
-      <xloc>544</xloc>
+      <xloc>592</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -130,7 +130,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>EVAL_TABLE_CONTENT</type>
       <attributes/>
-      <xloc>176</xloc>
+      <xloc>192</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -155,7 +155,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>EVAL_TABLE_CONTENT</type>
       <attributes/>
-      <xloc>352</xloc>
+      <xloc>384</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -180,7 +180,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>EVAL_TABLE_CONTENT</type>
       <attributes/>
-      <xloc>736</xloc>
+      <xloc>800</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -227,21 +227,8 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <name>06 Execute Dataset Context Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1312</xloc>
-      <yloc>48</yloc>
-      <parallel>N</parallel>
-      <attributes_hac/>
-    </action>
-    <action>
-      <loglevel>Basic</loglevel>
-      <logsubject/>
-      <logmessage/>
-      <name>Write to log</name>
-      <description/>
-      <type>WRITE_TO_LOG</type>
-      <attributes/>
-      <xloc>176</xloc>
-      <yloc>160</yloc>
+      <xloc>1088</xloc>
+      <yloc>176</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
@@ -250,8 +237,8 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>DUMMY</type>
       <attributes/>
-      <xloc>352</xloc>
-      <yloc>160</yloc>
+      <xloc>384</xloc>
+      <yloc>176</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
@@ -260,7 +247,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>DUMMY</type>
       <attributes/>
-      <xloc>736</xloc>
+      <xloc>800</xloc>
       <yloc>288</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -269,7 +256,12 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <connections>
         <connection>
           <name>his_oracle</name>
-          <waitfor>200</waitfor>
+          <waitfor>100</waitfor>
+          <waittime>millisecond</waittime>
+        </connection>
+        <connection>
+          <name>ods_postgres</name>
+          <waitfor>100</waitfor>
           <waittime>millisecond</waittime>
         </connection>
       </connections>
@@ -277,13 +269,127 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>CHECK_DB_CONNECTIONS</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>960</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
     <action>
-      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p03_raw_his_etl.hpl</filename>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p03_raw_his_ingestion_etl_stage.hpl</filename>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <create_parent_folder>N</create_parent_folder>
+      <set_logfile>N</set_logfile>
+      <set_append_logfile>N</set_append_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <wait_until_finished>Y</wait_until_finished>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>PRM_BUSINESS_DATE_KEY</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_CURSOR_COLUMN</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_DATASET_ID</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_IDENTITY_KEY</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_IDENTITY_KEY_1</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_SOURCE_KEY</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_SOURCE_KEY_1</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+      </parameters>
+      <run_configuration>local</run_configuration>
+      <name>07 Excute ETL Stage Pipeline</name>
+      <type>PIPELINE</type>
+      <attributes/>
+      <xloc>1088</xloc>
+      <yloc>288</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p04_raw_his_etl_reject.hpl</filename>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <create_parent_folder>N</create_parent_folder>
+      <set_logfile>N</set_logfile>
+      <set_append_logfile>N</set_append_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <wait_until_finished>Y</wait_until_finished>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>PRM_DATASET_ID</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_ODS_SQL_READ_DUPLICATE</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_TARGET_OBJECT_REJECT</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_TARGET_OBJECT_STAGE</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_TARGET_SCHEMA</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+      </parameters>
+      <run_configuration>local</run_configuration>
+      <name>08 Excute ETL Reject Pipeline</name>
+      <type>PIPELINE</type>
+      <attributes/>
+      <xloc>1088</xloc>
+      <yloc>400</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p05_raw_his_etl_upsert.hpl</filename>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
@@ -305,37 +411,101 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
           <stream_name/>
         </parameter>
         <parameter>
-          <name>PRM_BUSINESS_DATE_KEY</name>
+          <name>PRM_CURSOR_COLUMN</name>
           <value/>
           <stream_name/>
         </parameter>
         <parameter>
-          <name>PRM_SOURCE_INSTANCE_ID</name>
+          <name>PRM_DATASET_ID</name>
           <value/>
           <stream_name/>
         </parameter>
         <parameter>
-          <name>PRM_SOURCE_OBJECT</name>
+          <name>PRM_TARGET_KEY</name>
           <value/>
           <stream_name/>
         </parameter>
         <parameter>
-          <name>PRM_SOURCE_SCHEMA</name>
+          <name>PRM_TARGET_KEY_1</name>
           <value/>
           <stream_name/>
         </parameter>
         <parameter>
-          <name>PRM_TEST_RUN_DATE</name>
+          <name>PRM_TARGET_OBJECT</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_TARGET_OBJECT_STAGE</name>
+          <value/>
+          <stream_name/>
+        </parameter>
+        <parameter>
+          <name>PRM_TARGET_SCHEMA</name>
           <value/>
           <stream_name/>
         </parameter>
       </parameters>
       <run_configuration>local</run_configuration>
-      <name>07 Excute ETL Pipeline</name>
+      <name>09 Excute ETL Upsert Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1312</xloc>
-      <yloc>192</yloc>
+      <xloc>1088</xloc>
+      <yloc>496</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p06_raw_his_etl_statistics.hpl</filename>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <create_parent_folder>N</create_parent_folder>
+      <set_logfile>N</set_logfile>
+      <set_append_logfile>N</set_append_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <wait_until_finished>Y</wait_until_finished>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <run_configuration>local</run_configuration>
+      <name>10 Return ETL Statistics</name>
+      <type>PIPELINE</type>
+      <attributes/>
+      <xloc>800</xloc>
+      <yloc>496</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p07_raw_his_etl_reconcile.hpl</filename>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <create_parent_folder>N</create_parent_folder>
+      <set_logfile>N</set_logfile>
+      <set_append_logfile>N</set_append_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <wait_until_finished>Y</wait_until_finished>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <run_configuration>local</run_configuration>
+      <name>11 Finalize</name>
+      <type>PIPELINE</type>
+      <attributes/>
+      <xloc>592</xloc>
+      <yloc>496</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
@@ -364,13 +534,6 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
     </hop>
     <hop>
       <from>04 Check Active Batch</from>
-      <to>05 Create Batch</to>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>04 Check Active Batch</from>
       <to>04a SKIPPED and Release Lock</to>
       <evaluation>N</evaluation>
       <unconditional>N</unconditional>
@@ -381,13 +544,6 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <to>01 Validate Dataset</to>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>01 Validate Dataset</from>
-      <to>Write to log</to>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -405,22 +561,57 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>05 Create Batch</from>
-      <to>Check DB connections</to>
+      <from>06 Execute Dataset Context Pipeline</from>
+      <to>07 Excute ETL Stage Pipeline</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>07 Excute ETL Stage Pipeline</from>
+      <to>08 Excute ETL Reject Pipeline</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>08 Excute ETL Reject Pipeline</from>
+      <to>09 Excute ETL Upsert Pipeline</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>09 Excute ETL Upsert Pipeline</from>
+      <to>10 Return ETL Statistics</to>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Check DB connections</from>
-      <to>06 Execute Dataset Context Pipeline</to>
+      <to>05 Create Batch</to>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>06 Execute Dataset Context Pipeline</from>
-      <to>07 Excute ETL Pipeline</to>
+      <from>05 Create Batch</from>
+      <to>06 Execute Dataset Context Pipeline</to>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>04 Check Active Batch</from>
+      <to>Check DB connections</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>10 Return ETL Statistics</from>
+      <to>11 Finalize</to>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
       <enabled>Y</enabled>

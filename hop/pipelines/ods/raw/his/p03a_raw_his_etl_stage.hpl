@@ -11,15 +11,50 @@
       <parameter>
         <name>PRM_DATASET_ID</name>
         <description/>
-        <default_value>1</default_value>
+        <default_value/>
       </parameter>
       <parameter>
         <name>PRM_SQL_ORACLE</name>
         <description/>
-        <default_value>SELECT 1 AS runtime_source_instance_id, null AS runtime_batch_id, a.* FROM VIMES.HMS_EXAM a WHERE ROWNUM &lt;= 10</default_value>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_SCHEMA</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_BUSINESS_DATE_KEY</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_BATCH_ID</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_RUNTIME_SOURCE_INSTANCE_ID</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_STAGE</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_EXTENDED_STAGE</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_TARGET_OBJECT_REJECT</name>
+        <description/>
+        <default_value/>
       </parameter>
     </parameters>
-    <name>p03_raw_his_etl</name>
+    <name>p03a_raw_his_etl_stage</name>
     <name_sync_with_filename>Y</name_sync_with_filename>
     <description/>
     <extended_description/>
@@ -33,7 +68,7 @@
     <name>Data validator</name>
     <validator_field>
       <validation_name>check_source_key</validation_name>
-      <name>HE_RECEPTIDX</name>
+      <name/>
       <max_length/>
       <min_length/>
       <null_allowed>N</null_allowed>
@@ -54,13 +89,13 @@
       <end_string_not_allowed/>
       <regular_expression/>
       <regular_expression_not_allowed/>
-      <error_code>ERR_ETL_P03_RH_001</error_code>
+      <error_code>VALIDATION_REQUIRED_FIELD</error_code>
       <error_description>ERR_Source key is null/ Invalid data type</error_description>
       <allowed_value/>
     </validator_field>
     <validator_field>
       <validation_name>check_cursor_column</validation_name>
-      <name>HE_UPDATEDDATE</name>
+      <name/>
       <max_length/>
       <min_length/>
       <null_allowed>N</null_allowed>
@@ -81,13 +116,13 @@
       <end_string_not_allowed/>
       <regular_expression/>
       <regular_expression_not_allowed/>
-      <error_code>ERR_ETL_P03_RH_002</error_code>
+      <error_code>VALIDATION_REQUIRED_FIELD</error_code>
       <error_description>ERR_Cursor column is null/ Invalid data type</error_description>
       <allowed_value/>
     </validator_field>
     <validator_field>
       <validation_name>check_business_date_key</validation_name>
-      <name>HE_EXAMDATE</name>
+      <name/>
       <max_length/>
       <min_length/>
       <null_allowed>N</null_allowed>
@@ -108,8 +143,35 @@
       <end_string_not_allowed/>
       <regular_expression/>
       <regular_expression_not_allowed/>
-      <error_code>ERR_ETL_P03_RH_003</error_code>
+      <error_code>VALIDATION_REQUIRED_FIELD</error_code>
       <error_description>ERR_Business date column  is null/ Invalid data type</error_description>
+      <allowed_value/>
+    </validator_field>
+    <validator_field>
+      <validation_name>check_source_key_1</validation_name>
+      <name/>
+      <max_length/>
+      <min_length/>
+      <null_allowed>N</null_allowed>
+      <only_null_allowed>N</only_null_allowed>
+      <only_numeric_allowed>N</only_numeric_allowed>
+      <data_type>Integer</data_type>
+      <data_type_verified>Y</data_type_verified>
+      <conversion_mask/>
+      <decimal_symbol/>
+      <grouping_symbol/>
+      <is_sourcing_values>N</is_sourcing_values>
+      <sourcing_field/>
+      <min_value/>
+      <max_value/>
+      <start_string/>
+      <start_string_not_allowed/>
+      <end_string/>
+      <end_string_not_allowed/>
+      <regular_expression/>
+      <regular_expression_not_allowed/>
+      <error_code>VALIDATION_REQUIRED_FIELD</error_code>
+      <error_description>ERR_Source key is null/ Invalid data type</error_description>
       <allowed_value/>
     </validator_field>
     <validate_all>Y</validate_all>
@@ -117,51 +179,10 @@
     <concat_separator>; </concat_separator>
     <suppress_log_failed_data>N</suppress_log_failed_data>
     <suppress_error_log>N</suppress_error_log>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>192</xloc>
-      <yloc>48</yloc>
-    </GUI>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <attributes/>
-  </transform>
-  <transform>
-    <type>WriteToLog</type>
-    <name>Write to log</name>
-    <displayHeader>Y</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage/>
-    <loglevel>Basic</loglevel>
-    <fields/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-    <GUI>
-      <xloc>480</xloc>
-      <yloc>48</yloc>
-    </GUI>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <attributes/>
-  </transform>
-  <transform>
-    <type>Unique</type>
-    <name>Unique rows</name>
-    <count_rows>N</count_rows>
-    <count_field/>
-    <fields/>
-    <reject_duplicate_row>Y</reject_duplicate_row>
-    <error_description>source key is duplicate</error_description>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-    <GUI>
-      <xloc>336</xloc>
+      <xloc>288</xloc>
       <yloc>48</yloc>
     </GUI>
     <partitioning>
@@ -174,7 +195,7 @@
     <type>ExcelInput</type>
     <name>Microsoft Excel input test</name>
     <file>
-      <name>${PROJECT_HOME}/pipelines/ods/raw/his/hms_exam_test.xlsx</name>
+      <name>${PROJECT_HOME}/pipelines/ods/raw/his/hms_exam.xlsx</name>
       <filemask/>
       <exclude_filemask/>
       <file_required/>
@@ -201,7 +222,7 @@
     <fields>
       <field>
         <name>RUNTIME_SOURCE_INSTANCE_ID</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -213,7 +234,7 @@
       </field>
       <field>
         <name>RUNTIME_BATCH_ID</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -309,7 +330,7 @@
       </field>
       <field>
         <name>HE_ROOMID</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -321,7 +342,7 @@
       </field>
       <field>
         <name>HE_RECEPTNO</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -417,7 +438,7 @@
       </field>
       <field>
         <name>HE_PULSE</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -429,7 +450,7 @@
       </field>
       <field>
         <name>HE_TEMPERATURE</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -441,7 +462,7 @@
       </field>
       <field>
         <name>HE_BLOODPRESSURE</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -453,7 +474,7 @@
       </field>
       <field>
         <name>HE_BLOODPRESSUREX</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -465,7 +486,7 @@
       </field>
       <field>
         <name>HE_BREATHINTERVAL</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -477,7 +498,7 @@
       </field>
       <field>
         <name>HE_WEIGHT</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -489,7 +510,7 @@
       </field>
       <field>
         <name>HE_HEIGHT</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -537,7 +558,7 @@
       </field>
       <field>
         <name>HE_TYPEID</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -597,7 +618,7 @@
       </field>
       <field>
         <name>HFE_REFROWID</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -621,7 +642,7 @@
       </field>
       <field>
         <name>HE_FEEIDX</name>
-        <type>Integer</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -981,7 +1002,7 @@
       </field>
       <field>
         <name>HE_BMI</name>
-        <type>String</type>
+        <type>Number</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -1017,7 +1038,7 @@
       </field>
       <field>
         <name>HE_THOI_GIAN_DO_HUYETAP</name>
-        <type>Timestamp</type>
+        <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -1115,7 +1136,55 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>48</xloc>
+      <xloc>304</xloc>
+      <yloc>480</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Check Null Reject Table</name>
+    <fields>
+      <field>
+        <name>RUNTIME_SOURCE_INSTANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>RUNTIME_BATCH_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>error_code</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>error_message</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>error_field</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>416</xloc>
       <yloc>48</yloc>
     </GUI>
     <partitioning>
@@ -1126,7 +1195,7 @@
   </transform>
   <transform>
     <type>SelectValues</type>
-    <name>Select values dynamic</name>
+    <name>Core Table</name>
     <fields>
       <field>
         <name>RUNTIME_SOURCE_INSTANCE_ID</name>
@@ -1147,60 +1216,18 @@
         <precision>-2</precision>
       </field>
       <field>
-        <name>HE_UPDATEDDATE</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>HE_EXAMDATE</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
         <name>HE_PATIENTNO</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>HE_DOCNO</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>rejection_code</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>rejection_reason</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>rejection_field</name>
-        <rename/>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>
-      <field>
-        <name>rejection_nummer</name>
         <rename/>
         <length>-2</length>
         <precision>-2</precision>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>336</xloc>
-      <yloc>176</yloc>
+      <xloc>128</xloc>
+      <yloc>208</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1209,26 +1236,34 @@
     <attributes/>
   </transform>
   <transform>
-    <type>TableInput</type>
-    <name>Target object mapping</name>
-    <sql>SELECT
-	target_schema,
-	target_object
-FROM
-	control.dataset_column_mapping
-WHERE
-	dataset_id = ${PRM_DATASET_ID}</sql>
-    <limit>1</limit>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
-    <connection>ods_postgres</connection>
-    <lookup/>
-    <sql_from_file/>
-    <distribute>N</distribute>
+    <type>SelectValues</type>
+    <name>Extend Table</name>
+    <fields>
+      <field>
+        <name>RUNTIME_SOURCE_INSTANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>RUNTIME_BATCH_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>HE_RECEPTIDX</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>160</yloc>
+      <xloc>464</xloc>
+      <yloc>208</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1238,9 +1273,11 @@ WHERE
   </transform>
   <transform>
     <type>TableOutput</type>
-    <name>Table output</name>
-    <table/>
-    <commit>1000</commit>
+    <name>Raw.ods_table_stage</name>
+    <connection>ods_postgres</connection>
+    <schema>${PRM_TARGET_SCHEMA}</schema>
+    <table>${PRM_TARGET_OBJECT_STAGE}</table>
+    <commit>5000</commit>
     <truncate>N</truncate>
     <only_when_have_rows>N</only_when_have_rows>
     <ignore_errors>N</ignore_errors>
@@ -1253,6 +1290,7 @@ WHERE
     <tablename_field/>
     <tablename_in_table>Y</tablename_in_table>
     <return_keys>N</return_keys>
+    <return_field/>
     <specify_fields>N</specify_fields>
     <auto_update_table_structure>N</auto_update_table_structure>
     <always_drop_and_recreate>N</always_drop_and_recreate>
@@ -1263,8 +1301,8 @@ WHERE
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>448</xloc>
-      <yloc>288</yloc>
+      <xloc>128</xloc>
+      <yloc>336</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1273,28 +1311,100 @@ WHERE
     <attributes/>
   </transform>
   <transform>
-    <type>SetVariable</type>
-    <name>Set variables</name>
-    <fields>
-      <field>
-        <field_name>target_schema</field_name>
-        <variable_name>${PRM_TARGET_SCHEMA}</variable_name>
-        <variable_type>PARENT_WORKFLOW</variable_type>
-        <default_value/>
-      </field>
-      <field>
-        <field_name>target_object</field_name>
-        <variable_name>${PRM_TARGET_OBJECT}</variable_name>
-        <variable_type>PARENT_WORKFLOW</variable_type>
-        <default_value/>
-      </field>
-    </fields>
-    <use_formatting>Y</use_formatting>
+    <type>TableOutput</type>
+    <name>Raw.ods_table_extended_stage</name>
+    <connection>ods_postgres</connection>
+    <schema>${PRM_TARGET_SCHEMA}</schema>
+    <table>${PRM_TARGET_OBJECT_EXTENDED_STAGE}</table>
+    <commit>5000</commit>
+    <truncate>N</truncate>
+    <only_when_have_rows>N</only_when_have_rows>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <specify_fields>N</specify_fields>
+    <auto_update_table_structure>N</auto_update_table_structure>
+    <always_drop_and_recreate>N</always_drop_and_recreate>
+    <add_columns>N</add_columns>
+    <drop_columns>N</drop_columns>
+    <change_column_types>N</change_column_types>
+    <fields/>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>240</yloc>
+      <xloc>464</xloc>
+      <yloc>336</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableOutput</type>
+    <name>Raw.ods_table_reject</name>
+    <connection>ods_postgres</connection>
+    <schema>${PRM_TARGET_SCHEMA}</schema>
+    <table>${PRM_TARGET_OBJECT_REJECT}</table>
+    <commit>5000</commit>
+    <truncate>N</truncate>
+    <only_when_have_rows>N</only_when_have_rows>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <specify_fields>N</specify_fields>
+    <auto_update_table_structure>N</auto_update_table_structure>
+    <always_drop_and_recreate>N</always_drop_and_recreate>
+    <add_columns>N</add_columns>
+    <drop_columns>N</drop_columns>
+    <change_column_types>N</change_column_types>
+    <fields/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Extract SQL Oracle</name>
+    <sql>${PRM_SQL_ORACLE} 
+	AND ${PRM_BUSINESS_DATE_KEY} BETWEEN TO_TIMESTAMP('2026-05-25' || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+                                AND TO_TIMESTAMP('2026-05-25' || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS')</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>his_oracle</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>128</xloc>
+      <yloc>48</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -1305,32 +1415,37 @@ WHERE
   <order>
     <hop>
       <from>Data validator</from>
-      <to>Unique rows</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Microsoft Excel input test</from>
-      <to>Data validator</to>
+      <to>Check Null Reject Table</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Data validator</from>
-      <to>Select values dynamic</to>
+      <to>Core Table</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Select values dynamic</from>
-      <to>Write to log</to>
+      <from>Data validator</from>
+      <to>Extend Table</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Select values dynamic</from>
-      <to>Table output</to>
+      <from>Extend Table</from>
+      <to>Raw.ods_table_extended_stage</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Target object mapping</from>
-      <to>Set variables</to>
+      <from>Core Table</from>
+      <to>Raw.ods_table_stage</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Check Null Reject Table</from>
+      <to>Raw.ods_table_reject</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Extract SQL Oracle</from>
+      <to>Data validator</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -1339,15 +1454,25 @@ WHERE
   <transform_error_handling>
     <error>
       <source_transform>Data validator</source_transform>
-      <target_transform>Select values dynamic</target_transform>
+      <target_transform>Check Null Reject Table</target_transform>
       <is_enabled>Y</is_enabled>
-      <nr_valuename>rejection_nummer</nr_valuename>
-      <descriptions_valuename>rejection_reason</descriptions_valuename>
-      <fields_valuename>rejection_field</fields_valuename>
-      <codes_valuename>rejection_code</codes_valuename>
+      <nr_valuename/>
+      <descriptions_valuename>error_message</descriptions_valuename>
+      <fields_valuename>error_field</fields_valuename>
+      <codes_valuename>error_code</codes_valuename>
       <max_errors/>
       <max_pct_errors>1</max_pct_errors>
-      <min_pct_rows>1000</min_pct_rows>
+      <min_pct_rows>5000</min_pct_rows>
+    </error>
+    <error>
+      <source_transform>Core Table</source_transform>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename>error_row</nr_valuename>
+      <descriptions_valuename>error_description</descriptions_valuename>
+      <codes_valuename>error_code</codes_valuename>
+      <max_errors/>
+      <max_pct_errors/>
+      <min_pct_rows/>
     </error>
   </transform_error_handling>
 </pipeline>

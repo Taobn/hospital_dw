@@ -35,7 +35,9 @@ LEFT JOIN control.dataset s
 	ON s.source_instance_id = i.source_instance_id
 	
 WHERE d.source_code = '${PRM_SOURCE_CODE}'
-  AND d.is_active = TRUE;</sql>
+  AND d.is_active = TRUE
+  AND i.is_active = TRUE
+  AND s.is_active = TRUE;</sql>
     <limit>0</limit>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>

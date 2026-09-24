@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pipeline>
+  <info>
+    <pipeline_version/>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <pipeline_type>Normal</pipeline_type>
+    <pipeline_status>0</pipeline_status>
+    <parameters>
+      <parameter>
+        <name>PRM_SQL_RETURN_ETL_STATISTICS</name>
+        <description/>
+        <default_value>WITH stage_stats AS (
+    SELECT
+        COUNT(*) AS stage_row_count,
+        MIN(updated_date) AS min_updated_date,
+        MAX(updated_date) AS max_updated_date
+    FROM raw.ods_raw_exam_stage
+    WHERE batch_id = 113
+),
+reject_stats AS (
+    SELECT
+        COUNT(*) AS total_rejected_row_count,
+        COUNT(*) FILTER (
+            WHERE error_code IN (
+                'VALIDATION_REQUIRED_FIELD'
+            )
+        ) AS initial_rejected_row_count,
+        COUNT(*) FILTER (
+            WHERE error_code = 'VALIDATION_DUPLICATE_BUSINESS_KEY'
+        ) AS duplicate_rejected_row_count
+    FROM raw.ods_raw_exam_reject
+    WHERE batch_id = 113
+),
+calculated AS (
+    SELECT
+        113::BIGINT AS batch_id,
+        s.stage_row_count,
+        r.initial_rejected_row_count,
+        r.duplicate_rejected_row_count,
+        r.total_rejected_row_count,
+        s.stage_row_count
+           - r.duplicate_rejected_row_count
+           AS accepted_row_count,
+        s.stage_row_count
+            + r.initial_rejected_row_count
+            AS source_row_count,
+        s.min_updated_date,
+        s.max_updated_date
+    FROM stage_stats s
+    CROSS JOIN reject_stats r
+)
+SELECT
+    c.*,
+    CASE
+        WHEN c.source_row_count
+             =
+             c.accepted_row_count
+             + c.total_rejected_row_count
+        THEN 'PASS'
+       ELSE 'FAIL'
+   END AS statistics_status
+FROM calculated c;</default_value>
+      </parameter>
+    </parameters>
+    <name>p06_raw_his_etl_statistics</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description/>
+    <extended_description/>
+    <created_user>-</created_user>
+    <modified_user>-</modified_user>
+    <created_date>2026/09/24 09:20:39.189</created_date>
+    <modified_date>2026/09/24 09:20:39.189</modified_date>
+  </info>
+  <transform>
+    <type>TableInput</type>
+    <name>Return ETL Statistics</name>
+    <sql>${PRM_SQL_RETURN_ETL_STATISTICS}</sql>
+    <limit>0</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>192</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>Case PASS: JavaScript</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+var sql_update_batch_statistics;
+	sql_update_batch_statistics =
+	"UPDATE control.batch" + "\n" +
+	"SET" + "\n" +
+	"    source_row_count = " + source_row_count  + ",\n" +
+	"    accepted_row_count = " + accepted_row_count + ",\n" +
+	"    rejected_row_count = " + total_rejected_row_count + ",\n" +
+	"    error_count = " + (source_row_count - accepted_row_count - total_rejected_row_count) + ",\n" +
+	"    updated_at = CURRENT_TIMESTAMP" + "\n" +
+	"WHERE batch_id = " + batch_id + "\n" +
+	"    AND status = 'RUNNING';";
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql_update_batch_statistics</name>
+        <rename>sql_update_batch_statistics</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>192</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values</name>
+    <fields>
+      <field>
+        <name>sql_update_batch_statistics</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>192</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSqlRow</type>
+    <name>Execute update Batch when Pass</name>
+    <sql_field>sql_update_batch_statistics</sql_field>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <commit>1</commit>
+    <sqlFromfile>N</sqlFromfile>
+    <sendOneStatement>Y</sendOneStatement>
+    <connection>ods_postgres</connection>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>896</xloc>
+      <yloc>192</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SwitchCase</type>
+    <name>Switch / case</name>
+    <fieldname>statistics_status</fieldname>
+    <case_value_type/>
+    <case_value_format/>
+    <case_value_decimal/>
+    <case_value_group/>
+    <cases>
+      <case>
+        <value>PASS</value>
+        <target_transform>Case PASS: JavaScript</target_transform>
+      </case>
+      <case>
+        <value>FAIL</value>
+        <target_transform>Case FAIL: JavaScript</target_transform>
+      </case>
+    </cases>
+    <default_target_transform/>
+    <use_contains>N</use_contains>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>400</xloc>
+      <yloc>192</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ScriptValueMod</type>
+    <name>Case FAIL: JavaScript</name>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+var sql_update_batch_statistics;
+	sql_update_batch_statistics =
+	"UPDATE control.batch" + "\n" +
+	"SET" + "\n" +
+	"    status = 'FAILED'," + "\n" +
+	"    completed_at = CURRENT_TIMESTAMP" + ",\n" +
+	"    error_count = error_count + 1" + ",\n" +
+	"    error_message = 'RECON_STATISTICS_INVALID'" + ",\n" +
+	"    updated_at = CURRENT_TIMESTAMP" + "\n" +
+	"WHERE batch_id = " + batch_id + "\n" +
+	"    AND status = 'RUNNING';";
+</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql_update_batch_statistics</name>
+        <rename>sql_update_batch_statistics</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <optimizationLevel>9</optimizationLevel>
+    <languageVersion>ES6</languageVersion>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select values 2</name>
+    <fields>
+      <field>
+        <name>sql_update_batch_statistics</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSqlRow</type>
+    <name>Execute update Batch when fail</name>
+    <sql_field>sql_update_batch_statistics</sql_field>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <commit>1</commit>
+    <sqlFromfile>N</sqlFromfile>
+    <sendOneStatement>Y</sendOneStatement>
+    <connection>ods_postgres</connection>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>896</xloc>
+      <yloc>304</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <order>
+    <hop>
+      <from>Case PASS: JavaScript</from>
+      <to>Select values</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values</from>
+      <to>Execute update Batch when Pass</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>Return ETL Statistics</from>
+      <to>Switch / case</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case</from>
+      <to>Case PASS: JavaScript</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Case FAIL: JavaScript</from>
+      <to>Select values 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values 2</from>
+      <to>Execute update Batch when fail</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case</from>
+      <to>Case FAIL: JavaScript</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <notepads/>
+  <attributes/>
+  <transform_error_handling/>
+</pipeline>

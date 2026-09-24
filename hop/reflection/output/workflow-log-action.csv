@@ -1,88 +1,281 @@
 loggingDate;workflowName;workflowFilename;workflowLogChannelId;workflowParentLogChannelId;actionName;actionNr;actionResult;actionLogChannelId;actionLoggingText;actionErrors;actionLogDate;actionDuration;actionExitStatus;actionNrFilesRetrieved;actionFilename;actionComment;actionReason
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;Start;0;Y;bf60cfa4-9dae-4040-8bfe-b30ae5a5742c;;0;2026/09/16 09:41:40.996;0;0;0;;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;01 Validate Dataset;1;Y;294d4498-689e-48e6-ad31-636c7df2b494;;0;2026/09/16 09:41:41.013;17;0;0;;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;02 Acquire Dataset Lock;2;N;982edb68-4f80-48ab-88ed-791f4819df76;"2026/09/16 09:41:41 - 02 Acquire Dataset Lock - ERROR: An error occurred executing this action: 
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - An error occurred executing SQL: 
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - SELECT d.dataset_id
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - FROM control.dataset d
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - WHERE d.dataset_code = ?
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   AND d.is_active = TRUE
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   AND pg_try_advisory_lock(d.dataset_id) = TRUE;
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - 
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock - ERROR: syntax error at or near ""AND""
-2026/09/16 09:41:41 - 02 Acquire Dataset Lock -   Position: 71";1;2026/09/16 09:41:41.031;17;0;0;;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;03 Stale RUNNING Cleanup;3;Y;fd306d4e-5b16-45c2-bf57-4cbc470b4b47;;0;2026/09/16 09:41:41.058;27;0;0;;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;04 Check Active Batch;4;Y;8dedcf08-7f18-4b3c-a190-3f01d3daf0b7;;0;2026/09/16 09:41:41.078;19;0;0;;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;05 Create Batch;5;Y;e15e8a7d-8a9a-4133-90de-19dd62c415e2;"2026/09/16 09:41:41 - 05 Create Batch - Using run configuration [local]
-2026/09/16 09:41:41 - p00_create_batch - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
-2026/09/16 09:41:41 - p00_create_batch - Execution started for pipeline [p00_create_batch]
-2026/09/16 09:41:41 - Table input.0 - Finished reading query, closing connection.
-2026/09/16 09:41:41 - Set variables.0 - Setting project variables...
-2026/09/16 09:41:41 - Table input.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Set variables.0 - Set variable PRM_BATCH_ID to value [44]
-2026/09/16 09:41:41 - Write to log.0 - 
-2026/09/16 09:41:41 - Write to log.0 - ------------> Linenr 1------------------------------
-2026/09/16 09:41:41 - Write to log.0 - batch_id = 44
-2026/09/16 09:41:41 - Write to log.0 - 
-2026/09/16 09:41:41 - Write to log.0 - ====================
-2026/09/16 09:41:41 - Set variables.0 - Finished after 1 rows.
-2026/09/16 09:41:41 - Set variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Write to log.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - p00_create_batch - Pipeline duration : 0.047 seconds [  0.047"" ]
-2026/09/16 09:41:41 - p00_create_batch - Execution finished on a local pipeline engine with run configuration 'local'";0;2026/09/16 09:41:41.143;63;0;0;/srv/hospital_dw/hop/pipelines/ods/helpers/p00_create_batch.hpl;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;06 Execute Dataset Pipeline;6;Y;24f74c28-7c0a-4e29-83a7-39adc80c51d7;"2026/09/16 09:41:41 - 06 Execute Dataset Pipeline - Using run configuration [local]
-2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
-2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Execution started for pipeline [pl_raw_HIS_EXAM]
-2026/09/16 09:41:41 - Get variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - 02 Read Watermark.0 - Finished reading query, closing connection.
-2026/09/16 09:41:41 - 01 Read Dataset Metadata.0 - Finished reading query, closing connection.
-2026/09/16 09:41:41 - 02 Read Watermark.0 - Finished processing (I=1, O=0, R=0, W=2, U=0, E=0)
-2026/09/16 09:41:41 - 01 Read Dataset Metadata.0 - Finished processing (I=1, O=0, R=0, W=2, U=0, E=0)
-2026/09/16 09:41:41 - 01A Validate Dataset Metadata.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Select values 3.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - 03 Read Ingestion.0 - Finished processing (I=1, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Select values 2.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Merge join.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Merge join 2.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Write to log.0 - 
-2026/09/16 09:41:41 - Write to log.0 - ------------> Linenr 1------------------------------
-2026/09/16 09:41:41 - Write to log.0 - dataset_id = 1
-2026/09/16 09:41:41 - Write to log.0 - dataset_code = HIS_EXAM
-2026/09/16 09:41:41 - Write to log.0 - source_instance_id = 1
-2026/09/16 09:41:41 - Write to log.0 - source_schema = VIMES
-2026/09/16 09:41:41 - Write to log.0 - source_object = HMS_EXAM
-2026/09/16 09:41:41 - Write to log.0 - refresh_mode = INCREMENTAL
-2026/09/16 09:41:41 - Write to log.0 - ingestion_config = {
-2026/09/16 09:41:41 - Write to log.0 -   ""schedule"" : {
-2026/09/16 09:41:41 - Write to log.0 -     ""frequency_minutes"" : 15
-2026/09/16 09:41:41 - Write to log.0 -   },
-2026/09/16 09:41:41 - Write to log.0 -   ""source_key"" : [ ""HE_RECEPTIDX"" ],
-2026/09/16 09:41:41 - Write to log.0 -   ""target_key"" : [ ""exam_id"" ],
-2026/09/16 09:41:41 - Write to log.0 -   ""incremental"" : {
-2026/09/16 09:41:41 - Write to log.0 -     ""strategy"" : ""WATERMARK"",
-2026/09/16 09:41:41 - Write to log.0 -     ""cursor_column"" : ""HE_UPDATEDDATE"",
-2026/09/16 09:41:41 - Write to log.0 -     ""overlap_minutes"" : 5,
-2026/09/16 09:41:41 - Write to log.0 -     ""cursor_data_type"" : ""TIMESTAMP""
-2026/09/16 09:41:41 - Write to log.0 -   },
-2026/09/16 09:41:41 - Write to log.0 -   ""delete_strategy"" : ""NONE""
-2026/09/16 09:41:41 - Write to log.0 - }
-2026/09/16 09:41:41 - Write to log.0 - watermark_id = 1
-2026/09/16 09:41:41 - Write to log.0 - watermark_type = TIMESTAMP
-2026/09/16 09:41:41 - Write to log.0 - watermark_column = HE_UPDATEDDATE
-2026/09/16 09:41:41 - Write to log.0 - last_value_timestamp = null
-2026/09/16 09:41:41 - Write to log.0 - last_value_numeric = null
-2026/09/16 09:41:41 - Write to log.0 - last_value_text = null
-2026/09/16 09:41:41 - Write to log.0 - last_batch_id = null
-2026/09/16 09:41:41 - Write to log.0 - initialized_at = null
-2026/09/16 09:41:41 - Write to log.0 - 
-2026/09/16 09:41:41 - Write to log.0 - ====================
-2026/09/16 09:41:41 - Select values.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Write to log.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - Merge join 2 2.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
-2026/09/16 09:41:41 - JavaScript.0 - ECMAScript language level set to ES6.
-2026/09/16 09:41:41 - JavaScript.0 - Optimization level set to 9.
-2026/09/16 09:41:41 - Select values 4.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - JavaScript.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
-2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Pipeline duration : 0.68 seconds [  0.680"" ]
-2026/09/16 09:41:41 - pl_raw_HIS_EXAM - Execution finished on a local pipeline engine with run configuration 'local'";0;2026/09/16 09:41:41.839;696;0;0;/srv/hospital_dw/hop/pipelines/ods/raw/his/pl_raw_HIS_EXAM.hpl;End of action;
-2026/09/16 09:41:41.846;w01_his_ingestion;/srv/hospital_dw/hop/workflows/w01_his_ingestion.hwf;b16ae4eb-a95a-48d2-b066-c4c317640afc;;02 Abort workflow;3;N;7fb9c5d5-28b9-47c9-bcda-96ec6d919fe9;2026/09/16 09:41:41 - 02 Abort workflow - ERROR: Terminate as SKIPPED;1;2026/09/16 09:41:41.841;1;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;Start;0;Y;dcf909e1-940c-4c80-b2f9-daa2f6fab9b5;;0;2026/09/18 10:08:39.598;0;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;01 Validate Dataset;1;Y;987dc55f-ffc4-40d6-b75a-f972be39852d;;0;2026/09/18 10:08:39.619;20;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;02 Acquire Dataset Lock;2;Y;3ca7a99b-e529-4e3e-ab01-da51b412294e;;0;2026/09/18 10:08:39.635;15;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;03 Stale RUNNING Cleanup;3;Y;d0cbc4d2-30f4-44f8-beb4-1712f2845206;;0;2026/09/18 10:08:39.653;16;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;04 Check Active Batch;4;Y;dfb61fef-21a6-455a-b8fc-76e75305e139;;0;2026/09/18 10:08:39.677;23;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;05 Create Batch;5;Y;c9ee55df-3388-482c-9077-a8fc10c6fc0f;"2026/09/18 10:08:39 - 05 Create Batch - Using run configuration [local]
+2026/09/18 10:08:39 - p00_create_batch - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/18 10:08:39 - p00_create_batch - Execution started for pipeline [p00_create_batch]
+2026/09/18 10:08:39 - Table input.0 - Finished reading query, closing connection.
+2026/09/18 10:08:39 - Set variables.0 - Setting project variables...
+2026/09/18 10:08:39 - Set variables.0 - Set variable PRM_BATCH_ID to value [108]
+2026/09/18 10:08:39 - Write to log.0 - 
+2026/09/18 10:08:39 - Write to log.0 - ------------> Linenr 1------------------------------
+2026/09/18 10:08:39 - Write to log.0 - batch_id = 108
+2026/09/18 10:08:39 - Write to log.0 - 
+2026/09/18 10:08:39 - Write to log.0 - ====================
+2026/09/18 10:08:39 - Table input.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/18 10:08:39 - Set variables.0 - Finished after 1 rows.
+2026/09/18 10:08:39 - Set variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:39 - Write to log.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:39 - p00_create_batch - Pipeline duration : 0.028 seconds [  0.028"" ]
+2026/09/18 10:08:39 - p00_create_batch - Execution finished on a local pipeline engine with run configuration 'local'";0;2026/09/18 10:08:39.709;31;0;0;/srv/hospital_dw/hop/pipelines/ods/helpers/p00_create_batch.hpl;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;Check DB connections;6;Y;265ed6af-ce11-461f-aa7e-30ceaa24aa22;;0;2026/09/18 10:08:39.997;288;0;0;;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;06 Execute Dataset Context Pipeline;7;Y;7d8dc4a2-6d45-4d4f-9076-ad5ef34ec4b0;"2026/09/18 10:08:40 - 06 Execute Dataset Context Pipeline - Using run configuration [local]
+2026/09/18 10:08:40 - p02_raw_his_context - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/18 10:08:40 - p02_raw_his_context - Execution started for pipeline [p02_raw_his_context]
+2026/09/18 10:08:40 - Get variables HIS Workflow.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 01 Read Dataset Metadata.0 - Finished reading query, closing connection.
+2026/09/18 10:08:40 - 01 Read Dataset Metadata.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 01A Validate Dataset Metadata.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 02 Read Watermark.0 - Finished reading query, closing connection.
+2026/09/18 10:08:40 - 03 Read Ingestion JSON.0 - Finished processing (I=1, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 02 Read Watermark.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Select values Watermark.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Select values Ingestion.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Merge join Extract Ingestion.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Merge join.0 - Finished processing (I=0, O=0, R=2, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 04 Calculate Extraction Window.0 - ECMAScript language level set to ES6.
+2026/09/18 10:08:40 - 04 Calculate Extraction Window.0 - Optimization level set to 9.
+2026/09/18 10:08:40 - Select values calculate.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 05 Extraction SQL.0 - ECMAScript language level set to ES6.
+2026/09/18 10:08:40 - 05 Extraction SQL.0 - Optimization level set to 9.
+2026/09/18 10:08:40 - 04 Calculate Extraction Window.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Select values.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Setting project variables...
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_DATASET_ID to value [1]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_SOURCE_INSTANCE_ID to value [1]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_SOURCE_SCHEMA to value [VIMES]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_SOURCE_OBJECT to value [HMS_EXAM]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_BATCH_ID to value [108]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_BUSINESS_DATE_KEY to value [HE_EXAMDATE]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_SQL_ORACLE to value [SELECT 1 AS runtime_source_instance_id, 108 AS runtime_batch_id, a.* FROM VIMES.HMS_EXAM a WHERE ROWNUM <= 10]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_SOURCE_KEY to value [HE_RECEPTIDX]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_IDENTITY_KEY to value [HE_PATIENTNO]
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Set variable PRM_IDENTITY_KEY_1 to value [HE_DOCNO]
+2026/09/18 10:08:40 - 05 Extraction SQL.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Finished after 1 rows.
+2026/09/18 10:08:40 - 06 Set HIS Context and SQL.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:40 - p02_raw_his_context - Pipeline duration : 0.696 seconds [  0.696"" ]
+2026/09/18 10:08:40 - p02_raw_his_context - Execution finished on a local pipeline engine with run configuration 'local'";0;2026/09/18 10:08:40.705;708;0;0;/srv/hospital_dw/hop/pipelines/ods/raw/his/p02_raw_his_context.hpl;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;07 Excute ETL Pipeline;8;Y;1d9e5406-b2bf-42aa-8ed8-57358594d1d5;"2026/09/18 10:08:40 - 07 Excute ETL Pipeline - Using run configuration [local]
+2026/09/18 10:08:40 - p03_raw_his_metadata_etl - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/18 10:08:40 - p03_raw_his_metadata_etl - Execution started for pipeline [p03_raw_his_metadata_etl]
+2026/09/18 10:08:40 - Generate rows.0 - Finished processing (I=0, O=0, R=0, W=1, U=0, E=0)
+2026/09/18 10:08:40 - Runtime field.0 - Finished processing (I=0, O=0, R=0, W=2, U=0, E=0)
+2026/09/18 10:08:40 - Reject Runtime Field.0 - Finished processing (I=0, O=0, R=0, W=6, U=0, E=0)
+2026/09/18 10:08:40 - Get variables.0 - Finished processing (I=0, O=0, R=1, W=2, U=0, E=0)
+2026/09/18 10:08:40 - Row normaliser Reject.0 - Finished processing (I=0, O=0, R=1, W=5, U=0, E=0)
+2026/09/18 10:08:40 - Row normaliser Validation.0 - Finished processing (I=0, O=0, R=1, W=3, U=0, E=0)
+2026/09/18 10:08:40 - Column  field mapping.0 - Finished reading query, closing connection.
+2026/09/18 10:08:40 - Column  field mapping.0 - Finished processing (I=54, O=0, R=0, W=54, U=0, E=0)
+2026/09/18 10:08:40 - Database lookup.0 - Finished processing (I=5, O=0, R=5, W=5, U=0, E=0)
+2026/09/18 10:08:41 - Reject Field Mapping.0 - Finished processing (I=0, O=0, R=11, W=11, U=0, E=0)
+2026/09/18 10:08:41 - Target Field Mapping.0 - Finished processing (I=0, O=0, R=56, W=56, U=0, E=0)
+2026/09/18 10:08:41 - p03a_raw_his_etl - Executing this pipeline using the Local Pipeline Engine with run configuration 'local'
+2026/09/18 10:08:41 - p03a_raw_his_etl - Execution started for pipeline [p03a_raw_his_etl]
+2026/09/18 10:08:41 - Target object mapping.0 - Finished reading query, closing connection.
+2026/09/18 10:08:41 - Set variables.0 - Setting project variables...
+2026/09/18 10:08:41 - Set variables.0 - Set variable ${PRM_TARGET_SCHEMA} to value [raw]
+2026/09/18 10:08:41 - Set variables.0 - Set variable ${PRM_TARGET_OBJECT} to value [ods_raw_exam]
+2026/09/18 10:08:41 - Target object mapping.0 - Finished processing (I=1, O=0, R=0, W=1, U=0, E=0)
+2026/09/18 10:08:41 - Set variables.0 - Finished after 1 rows.
+2026/09/18 10:08:41 - Set variables.0 - Finished processing (I=0, O=0, R=1, W=1, U=0, E=0)
+2026/09/18 10:08:41 - Data validator.0 - ERROR: ERR_Source key is null/ Invalid data type
+2026/09/18 10:08:41 - Data validator.0 - ERROR: ERR_Cursor column is null/ Invalid data type
+2026/09/18 10:08:41 - Data validator.0 - ERROR: ERR_Source key is null/ Invalid data type
+2026/09/18 10:08:41 - Data validator.0 - ERROR: ERR_Cursor column is null/ Invalid data type; ERR_Business date column  is null/ Invalid data type
+2026/09/18 10:08:41 - Write to log 2.0 - 
+2026/09/18 10:08:41 - Write to log 2.0 - ------------> Linenr 1------------------------------
+2026/09/18 10:08:41 - Write to log 2.0 - reception_no = 3
+2026/09/18 10:08:41 - Write to log 2.0 - exam_id = 16965600
+2026/09/18 10:08:41 - Write to log 2.0 - patient_id = 26575677
+2026/09/18 10:08:41 - Write to log 2.0 - document_no = 27915663
+2026/09/18 10:08:41 - Write to log 2.0 - created_by = ONLINE
+2026/09/18 10:08:41 - Write to log 2.0 - created_date = 2026/05/22 10:50:09.324653000
+2026/09/18 10:08:41 - Write to log 2.0 - updated_by = null
+2026/09/18 10:08:41 - Write to log 2.0 - updated_date = 2026/05/22 10:50:09.323939000
+2026/09/18 10:08:41 - Write to log 2.0 - department_code = TYC
+2026/09/18 10:08:41 - Write to log 2.0 - room_id = 173
+2026/09/18 10:08:41 - Write to log 2.0 - exam_type = D0000014
+2026/09/18 10:08:41 - Write to log 2.0 - exam_status = O
+2026/09/18 10:08:41 - Write to log 2.0 - exam_date = 2026/05/25 00:00:00.000000000
+2026/09/18 10:08:41 - Write to log 2.0 - doctor_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - pulse = null
+2026/09/18 10:08:41 - Write to log 2.0 - temperature = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure_x = null
+2026/09/18 10:08:41 - Write to log 2.0 - breath_interval = null
+2026/09/18 10:08:41 - Write to log 2.0 - weight = null
+2026/09/18 10:08:41 - Write to log 2.0 - height = null
+2026/09/18 10:08:41 - Write to log 2.0 - bmi = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure_measured_at = null
+2026/09/18 10:08:41 - Write to log 2.0 - icd10_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - type_id = null
+2026/09/18 10:08:41 - Write to log 2.0 - exam_type_3 = null
+2026/09/18 10:08:41 - Write to log 2.0 - detail_exam_type_3 = null
+2026/09/18 10:08:41 - Write to log 2.0 - has_fee = Y
+2026/09/18 10:08:41 - Write to log 2.0 - payment_status = N
+2026/09/18 10:08:41 - Write to log 2.0 - fee_ref_row_id = 0
+2026/09/18 10:08:41 - Write to log 2.0 - fee_ref_status = O
+2026/09/18 10:08:41 - Write to log 2.0 - fee_idx = 14
+2026/09/18 10:08:41 - Write to log 2.0 - paid_for = null
+2026/09/18 10:08:41 - Write to log 2.0 - is_emergency = null
+2026/09/18 10:08:41 - Write to log 2.0 - priority = null
+2026/09/18 10:08:41 - Write to log 2.0 - exam_move_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - hatd_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - isjo_flag = N
+2026/09/18 10:08:41 - Write to log 2.0 - isreq_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - reexam_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_department_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_room_id = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_reception_idx = null
+2026/09/18 10:08:41 - Write to log 2.0 - zone = null
+2026/09/18 10:08:41 - Write to log 2.0 - cancel_by = null
+2026/09/18 10:08:41 - Write to log 2.0 - treatment_time = null
+2026/09/18 10:08:41 - Write to log 2.0 - has_allergy = null
+2026/09/18 10:08:41 - Write to log 2.0 - in_out_package = null
+2026/09/18 10:08:41 - Write to log 2.0 - body_parts = null
+2026/09/18 10:08:41 - Write to log 2.0 - shift_code = AM
+2026/09/18 10:08:41 - Write to log 2.0 - room_key = null
+2026/09/18 10:08:41 - Write to log 2.0 - head_nurse_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - nurse_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - is_health_exam = null
+2026/09/18 10:08:41 - Write to log 2.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log 2.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log 2.0 - 
+2026/09/18 10:08:41 - Write to log 2.0 - ====================
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ------------> Linenr 1------------------------------
+2026/09/18 10:08:41 - Write to log.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log.0 - rejection_code = ERR_ETL_P03_RH_001
+2026/09/18 10:08:41 - Write to log.0 - rejection_reason = ERR_Source key is null/ Invalid data type
+2026/09/18 10:08:41 - Write to log.0 - rejection_nummer = 1
+2026/09/18 10:08:41 - Write to log.0 - rejection_field = HE_RECEPTIDX
+2026/09/18 10:08:41 - Write to log.0 - exam_id = null
+2026/09/18 10:08:41 - Write to log.0 - exam_date = 2026/05/25 00:00:00.000000000
+2026/09/18 10:08:41 - Write to log.0 - updated_date = 2026/05/23 11:22:24.317499000
+2026/09/18 10:08:41 - Write to log.0 - patient_id = 25819840
+2026/09/18 10:08:41 - Write to log.0 - document_no = 27918410
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ====================
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ------------> Linenr 2------------------------------
+2026/09/18 10:08:41 - Write to log.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log.0 - rejection_code = ERR_ETL_P03_RH_002
+2026/09/18 10:08:41 - Write to log.0 - rejection_reason = ERR_Cursor column is null/ Invalid data type
+2026/09/18 10:08:41 - Write to log.0 - rejection_nummer = 1
+2026/09/18 10:08:41 - Write to log.0 - rejection_field = HE_UPDATEDDATE
+2026/09/18 10:08:41 - Write to log.0 - exam_id = 16968911
+2026/09/18 10:08:41 - Write to log.0 - exam_date = 2026/05/25 00:00:00.000000000
+2026/09/18 10:08:41 - Write to log.0 - updated_date = null
+2026/09/18 10:08:41 - Write to log.0 - patient_id = 26576922
+2026/09/18 10:08:41 - Write to log.0 - document_no = 27918127
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ====================
+2026/09/18 10:08:41 - Write to log 2.0 - 
+2026/09/18 10:08:41 - Write to log 2.0 - ------------> Linenr 2------------------------------
+2026/09/18 10:08:41 - Write to log 2.0 - reception_no = 3
+2026/09/18 10:08:41 - Write to log 2.0 - exam_id = 16968688
+2026/09/18 10:08:41 - Write to log 2.0 - patient_id = 26576782
+2026/09/18 10:08:41 - Write to log 2.0 - document_no = 27917924
+2026/09/18 10:08:41 - Write to log 2.0 - created_by = ONLINE
+2026/09/18 10:08:41 - Write to log 2.0 - created_date = 2026/05/23 07:01:10.619171000
+2026/09/18 10:08:41 - Write to log 2.0 - updated_by = null
+2026/09/18 10:08:41 - Write to log 2.0 - updated_date = 2026/05/23 07:01:10.618854000
+2026/09/18 10:08:41 - Write to log 2.0 - department_code = C1.1
+2026/09/18 10:08:41 - Write to log 2.0 - room_id = 5
+2026/09/18 10:08:41 - Write to log 2.0 - exam_type = D0000001
+2026/09/18 10:08:41 - Write to log 2.0 - exam_status = O
+2026/09/18 10:08:41 - Write to log 2.0 - exam_date = 2026/05/25 00:00:00.000000000
+2026/09/18 10:08:41 - Write to log 2.0 - doctor_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - pulse = null
+2026/09/18 10:08:41 - Write to log 2.0 - temperature = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure_x = null
+2026/09/18 10:08:41 - Write to log 2.0 - breath_interval = null
+2026/09/18 10:08:41 - Write to log 2.0 - weight = null
+2026/09/18 10:08:41 - Write to log 2.0 - height = null
+2026/09/18 10:08:41 - Write to log 2.0 - bmi = null
+2026/09/18 10:08:41 - Write to log 2.0 - blood_pressure_measured_at = null
+2026/09/18 10:08:41 - Write to log 2.0 - icd10_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - type_id = null
+2026/09/18 10:08:41 - Write to log 2.0 - exam_type_3 = null
+2026/09/18 10:08:41 - Write to log 2.0 - detail_exam_type_3 = null
+2026/09/18 10:08:41 - Write to log 2.0 - has_fee = Y
+2026/09/18 10:08:41 - Write to log 2.0 - payment_status = N
+2026/09/18 10:08:41 - Write to log 2.0 - fee_ref_row_id = 0
+2026/09/18 10:08:41 - Write to log 2.0 - fee_ref_status = O
+2026/09/18 10:08:41 - Write to log 2.0 - fee_idx = 1
+2026/09/18 10:08:41 - Write to log 2.0 - paid_for = null
+2026/09/18 10:08:41 - Write to log 2.0 - is_emergency = null
+2026/09/18 10:08:41 - Write to log 2.0 - priority = null
+2026/09/18 10:08:41 - Write to log 2.0 - exam_move_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - hatd_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - isjo_flag = N
+2026/09/18 10:08:41 - Write to log 2.0 - isreq_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - reexam_flag = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_department_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_room_id = null
+2026/09/18 10:08:41 - Write to log 2.0 - forward_reception_idx = null
+2026/09/18 10:08:41 - Write to log 2.0 - zone = null
+2026/09/18 10:08:41 - Write to log 2.0 - cancel_by = null
+2026/09/18 10:08:41 - Write to log 2.0 - treatment_time = null
+2026/09/18 10:08:41 - Write to log 2.0 - has_allergy = null
+2026/09/18 10:08:41 - Write to log 2.0 - in_out_package = null
+2026/09/18 10:08:41 - Write to log 2.0 - body_parts = null
+2026/09/18 10:08:41 - Write to log 2.0 - shift_code = AM
+2026/09/18 10:08:41 - Write to log 2.0 - room_key = null
+2026/09/18 10:08:41 - Write to log 2.0 - head_nurse_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - nurse_code = null
+2026/09/18 10:08:41 - Write to log 2.0 - is_health_exam = null
+2026/09/18 10:08:41 - Write to log 2.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log 2.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log 2.0 - 
+2026/09/18 10:08:41 - Write to log 2.0 - ====================
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ------------> Linenr 3------------------------------
+2026/09/18 10:08:41 - Write to log.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log.0 - rejection_code = ERR_ETL_P03_RH_001
+2026/09/18 10:08:41 - Write to log.0 - rejection_reason = ERR_Source key is null/ Invalid data type
+2026/09/18 10:08:41 - Write to log.0 - rejection_nummer = 1
+2026/09/18 10:08:41 - Write to log.0 - rejection_field = HE_RECEPTIDX
+2026/09/18 10:08:41 - Write to log.0 - exam_id = null
+2026/09/18 10:08:41 - Write to log.0 - exam_date = 2026/05/25 00:00:00.000000000
+2026/09/18 10:08:41 - Write to log.0 - updated_date = 2026/05/24 14:02:25.223883000
+2026/09/18 10:08:41 - Write to log.0 - patient_id = 26577673
+2026/09/18 10:08:41 - Write to log.0 - document_no = 27919129
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ====================
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ------------> Linenr 4------------------------------
+2026/09/18 10:08:41 - Write to log.0 - source_instance_id = 1
+2026/09/18 10:08:41 - Write to log.0 - batch_id = 98
+2026/09/18 10:08:41 - Write to log.0 - rejection_code = ERR_ETL_P03_RH_002; ERR_ETL_P03_RH_003
+2026/09/18 10:08:41 - Write to log.0 - rejection_reason = ERR_Cursor column is null/ Invalid data type; ERR_Business date column  is null/ Invalid data type
+2026/09/18 10:08:41 - Write to log.0 - rejection_nummer = 2
+2026/09/18 10:08:41 - Write to log.0 - rejection_field = HE_UPDATEDDATE; HE_EXAMDATE
+2026/09/18 10:08:41 - Write to log.0 - exam_id = 16968341
+2026/09/18 10:08:41 - Write to log.0 - exam_date = null
+2026/09/18 10:08:41 - Write to log.0 - updated_date = null
+2026/09/18 10:08:41 - Write to log.0 - patient_id = 26510397
+2026/09/18 10:08:41 - Write to log.0 - document_no = 27917637
+2026/09/18 10:08:41 - Write to log.0 - 
+2026/09/18 10:08:41 - Write to log.0 - ====================
+2026/09/18 10:08:42 - Microsoft Excel input test.0 - Finished processing (I=7362, O=0, R=0, W=7362, U=0, E=0)
+2026/09/18 10:08:42 - Data validator.0 - Finished processing (I=0, O=0, R=7362, W=7358, U=0, E=4)
+2026/09/18 10:08:42 - Unique rows.0 - Finished processing (I=0, O=0, R=7358, W=7358, U=0, E=0)
+2026/09/18 10:08:42 - Select values.0 - Finished processing (I=0, O=0, R=7358, W=7358, U=0, E=0)
+2026/09/18 10:08:42 - Write to log 2.0 - Finished processing (I=0, O=0, R=7358, W=7358, U=0, E=0)
+2026/09/18 10:08:42 - Select values dynamic.0 - Finished processing (I=0, O=0, R=4, W=4, U=0, E=0)
+2026/09/18 10:08:42 - Write to log.0 - Finished processing (I=0, O=0, R=4, W=4, U=0, E=0)
+2026/09/18 10:08:42 - p03a_raw_his_etl - Pipeline duration : 1.164 seconds [  1.164"" ]
+2026/09/18 10:08:42 - p03a_raw_his_etl - Execution finished on a local pipeline engine with run configuration 'local'
+2026/09/18 10:08:42 - ETL metadata injection.0 - Finished processing (I=7362, O=0, R=7362, W=7362, U=0, E=4)
+2026/09/18 10:08:42 - p03_raw_his_metadata_etl - Pipeline duration : 1.79 seconds [  1.790"" ]
+2026/09/18 10:08:42 - p03_raw_his_metadata_etl - Execution finished on a local pipeline engine with run configuration 'local'";0;2026/09/18 10:08:42.506;1799;0;0;/srv/hospital_dw/hop/pipelines/ods/raw/his/p03_raw_his_metadata_etl.hpl;End of action;
+2026/09/18 10:08:42.518;w01_his_ingestion;/srv/hospital_dw/hop/workflows/parallel/w01_his_ingestion.hwf;23ad883e-6f9f-4263-8719-667cf4ac0ee7;;Write to log;2;Y;4c711b49-1e1a-48f2-ac2b-ba0cb4487b52;;0;2026/09/18 10:08:42.507;1;0;0;;End of action;
