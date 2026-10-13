@@ -345,12 +345,13 @@
     <endedLine/>
     <fileNameInField>N</fileNameInField>
     <fileNameField/>
+    <schema_definition/>
     <ignore_fields>N</ignore_fields>
     <file>
       <name>${PROJECT_HOME}/reflection/output/workflow-log-action</name>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
       <extension>csv</extension>
-      <append>N</append>
+      <append>Y</append>
       <split>N</split>
       <haspartno>N</haspartno>
       <add_date>N</add_date>
@@ -633,7 +634,7 @@
       <name>${PROJECT_HOME}/reflection/output/workflow-log</name>
       <do_not_open_new_file_init>Y</do_not_open_new_file_init>
       <extension>csv</extension>
-      <append>N</append>
+      <append>Y</append>
       <split>N</split>
       <haspartno>N</haspartno>
       <add_date>N</add_date>

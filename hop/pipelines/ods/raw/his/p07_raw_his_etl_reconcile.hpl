@@ -119,8 +119,8 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>240</yloc>
+      <xloc>48</xloc>
+      <yloc>48</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -141,8 +141,8 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>352</yloc>
+      <xloc>48</xloc>
+      <yloc>176</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -185,8 +185,8 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>288</xloc>
-      <yloc>352</yloc>
+      <xloc>192</xloc>
+      <yloc>48</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -196,7 +196,7 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
   </transform>
   <transform>
     <type>SwitchCase</type>
-    <name>Switch / case</name>
+    <name>Reconcile Case</name>
     <fieldname>reconcile_status</fieldname>
     <case_value_type/>
     <case_value_format/>
@@ -205,16 +205,16 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
     <cases>
       <case>
         <value>PASS</value>
-        <target_transform>Execute SQL script</target_transform>
+        <target_transform>Select when reconcile PASS</target_transform>
       </case>
     </cases>
-    <default_target_transform/>
+    <default_target_transform>Select when FAILED</default_target_transform>
     <use_contains>N</use_contains>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>352</yloc>
+      <xloc>336</xloc>
+      <yloc>48</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -224,50 +224,736 @@ WHERE batch_id = ${PRM_BATCH_ID};</sql>
   </transform>
   <transform>
     <type>ExecSql</type>
-    <name>Execute SQL script</name>
-    <connection/>
+    <name>PASS Execute update Batch &amp; Watermark</name>
+    <connection>ods_postgres</connection>
+    <sql>BEGIN;
+
+WITH finalized AS (
+    UPDATE control.batch
+    SET
+        status = 'SUCCESS',
+        completed_at = CURRENT_TIMESTAMP,
+        updated_at = CURRENT_TIMESTAMP,
+        error_code = NULL,
+        error_message = NULL
+    WHERE batch_id = ?
+      AND status = 'RUNNING'
+    RETURNING batch_id, dataset_id
+)
+UPDATE control.watermark w
+SET
+    last_value_timestamp = CAST(? AS TIMESTAMPTZ),
+    last_batch_id = f.batch_id,
+    updated_at = CURRENT_TIMESTAMP
+FROM finalized f
+WHERE w.dataset_id = f.dataset_id
+  AND w.is_active = TRUE
+  AND CAST(? AS TIMESTAMPTZ) IS NOT NULL
+  AND (
+      w.last_value_timestamp IS NULL
+      OR CAST(? AS TIMESTAMPTZ) >= w.last_value_timestamp
+  );
+
+COMMIT;</sql>
+    <execute_each_row>Y</execute_each_row>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+      <argument>
+        <name>batch_max_updated_date</name>
+      </argument>
+      <argument>
+        <name>batch_max_updated_date_1</name>
+      </argument>
+      <argument>
+        <name>batch_max_updated_date_2</name>
+      </argument>
+    </arguments>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1904</xloc>
+      <yloc>160</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when reconcile PASS</name>
+    <fields>
+      <field>
+        <name>max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>496</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSql</type>
+    <name>FAILED Execute SQL script</name>
+    <connection>ods_postgres</connection>
+    <sql>UPDATE control.batch
+SET
+    status = 'FAILED',
+    completed_at = CURRENT_TIMESTAMP,
+    error_count = error_count + 1,
+    error_message = 'RECON_COUNT_MISMATCH',
+    updated_at = CURRENT_TIMESTAMP
+WHERE batch_id = ?
+  AND status = 'RUNNING';</sql>
+    <execute_each_row>Y</execute_each_row>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+    </arguments>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>272</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when FAILED</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>160</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SwitchCase</type>
+    <name>Switch / case 2</name>
+    <fieldname>watermark_check</fieldname>
+    <case_value_type/>
+    <case_value_format/>
+    <case_value_decimal/>
+    <case_value_group/>
+    <cases>
+      <case>
+        <value>INITIALIZE</value>
+        <target_transform>Select when INITIALIZE</target_transform>
+      </case>
+      <case>
+        <value>NO_DATA</value>
+        <target_transform>Select when NO DATA</target_transform>
+      </case>
+      <case>
+        <value>PASS</value>
+        <target_transform>Select when PASS</target_transform>
+      </case>
+      <case>
+        <value>FAIL_WATERMARK_REGRESSION</value>
+        <target_transform>Select when FAIL</target_transform>
+      </case>
+    </cases>
+    <default_target_transform/>
+    <use_contains>N</use_contains>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1392</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSql</type>
+    <name>FAILED Execute error_log</name>
+    <connection>ods_postgres</connection>
+    <sql>UPDATE control.batch b
+SET
+    status = 'FAILED',
+    completed_at = CURRENT_TIMESTAMP,
+    error_count = error_count + 1,
+    error_code = 'WATERMARK_REGRESSION',
+    error_message = 'Batch max updated timestamp ' || ? || ' is earlier than current watermark ' || ? || '.',
+    updated_at = CURRENT_TIMESTAMP
+FROM control.watermark w
+WHERE b.dataset_id = w.dataset_id
+  AND w.is_active = TRUE
+  AND b.batch_id = ?
+  AND b.status = 'RUNNING';</sql>
+    <execute_each_row>Y</execute_each_row>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_max_updated_date</name>
+      </argument>
+      <argument>
+        <name>current_watermark</name>
+      </argument>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+    </arguments>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1392</xloc>
+      <yloc>272</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Check Watermark</name>
+    <sql>SELECT
+	? AS batch_id,
+    w.last_value_timestamp AS current_watermark,
+    CAST(? AS TIMESTAMPTZ) AS batch_max_updated_date,
+
+    CASE
+        WHEN CAST(? AS TIMESTAMPTZ) IS NULL
+            THEN 'NO_DATA'
+
+        WHEN w.last_value_timestamp IS NULL
+            THEN 'INITIALIZE'
+
+        WHEN CAST(? AS TIMESTAMPTZ) >= w.last_value_timestamp
+            THEN 'PASS'
+
+        ELSE 'FAIL_WATERMARK_REGRESSION'
+    END AS watermark_check
+
+FROM control.watermark w
+WHERE w.dataset_id = (
+    SELECT dataset_id
+    FROM control.batch
+    WHERE batch_id = ?
+)
+AND w.is_active = TRUE;</sql>
+    <limit>0</limit>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>N</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup>Select when found</lookup>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1248</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when PASS</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename>batch_max_updated_date_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename>batch_max_updated_date_2</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1648</xloc>
+      <yloc>160</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSql</type>
+    <name>NO DATA Execute update Batch</name>
+    <connection>ods_postgres</connection>
     <sql>BEGIN;
 
 UPDATE control.batch
 SET
     status = 'SUCCESS',
     completed_at = CURRENT_TIMESTAMP,
-    updated_at = CURRENT_TIMESTAMP
+    updated_at = CURRENT_TIMESTAMP,
+    error_code = NULL,
+    error_message = NULL
 WHERE batch_id = ?
   AND status = 'RUNNING';
 
-UPDATE control.watermark w
-SET
-    last_value_timestamp = ?,
-    last_batch_id = ?,
-    initialized_at = COALESCE(
-        w.initialized_at,
-        CURRENT_TIMESTAMP
-    ),
-    updated_at = CURRENT_TIMESTAMP
-WHERE w.dataset_id = (
-    SELECT dataset_id
-    FROM control.batch
-    WHERE batch_id = ?
-)
-AND w.is_active = TRUE;
+-- Không UPDATE control.watermark
+-- Watermark phải giữ nguyên.
 
 COMMIT;</sql>
-    <execute_each_row>N</execute_each_row>
+    <execute_each_row>Y</execute_each_row>
     <update_field/>
     <insert_field/>
     <delete_field/>
     <read_field/>
-    <single_statement>N</single_statement>
+    <single_statement>Y</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <set_params>N</set_params>
-    <arguments/>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+    </arguments>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>608</xloc>
-      <yloc>352</yloc>
+      <xloc>1904</xloc>
+      <yloc>272</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when NO DATA</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1648</xloc>
+      <yloc>272</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSql</type>
+    <name>INITIALIZE Execute update Batch &amp; Watermark</name>
+    <connection>ods_postgres</connection>
+    <sql>BEGIN;
+
+WITH finalized AS (
+    UPDATE control.batch
+    SET
+        status = 'SUCCESS',
+        completed_at = CURRENT_TIMESTAMP,
+        updated_at = CURRENT_TIMESTAMP,
+        error_code = NULL,
+        error_message = NULL
+    WHERE batch_id = ?
+
+      AND status = 'RUNNING'
+    RETURNING batch_id, dataset_id
+)
+UPDATE control.watermark w
+SET
+    last_value_timestamp = CAST(? AS TIMESTAMPTZ),
+    last_batch_id = f.batch_id,
+    initialized_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP
+FROM finalized f
+WHERE w.dataset_id = f.dataset_id
+  AND w.is_active = TRUE
+  AND CAST(? AS TIMESTAMPTZ) IS NOT NULL;
+
+COMMIT;</sql>
+    <execute_each_row>Y</execute_each_row>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+      <argument>
+        <name>batch_max_updated_date</name>
+      </argument>
+      <argument>
+        <name>batch_max_updated_date_1</name>
+      </argument>
+    </arguments>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1904</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when INITIALIZE</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename>batch_max_updated_date_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1648</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when FAIL</name>
+    <fields>
+      <field>
+        <name>batch_max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>current_watermark</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1392</xloc>
+      <yloc>160</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when found</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>max_updated_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>max_updated_date</name>
+        <rename>max_updated_date_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>max_updated_date</name>
+        <rename>max_updated_date_2</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename>batch_id_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1056</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Check found Watermark</name>
+    <sql>SELECT
+    b.batch_id,
+	CAST(? AS TIMESTAMPTZ) AS max_updated_date,
+    b.dataset_id,
+    w.watermark_id,
+    w.last_value_timestamp,
+	CASE WHEN w.watermark_id is not null
+		THEN 'WATERMARK_FOUND' ELSE NULL END AS status
+FROM control.batch b
+LEFT JOIN control.watermark w
+    ON w.dataset_id = b.dataset_id
+   AND w.is_active = TRUE
+WHERE b.batch_id = ?;</sql>
+    <limit>0</limit>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>N</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup>Select when reconcile PASS</lookup>
+    <sql_from_file/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>688</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SwitchCase</type>
+    <name>Watermark found Case</name>
+    <fieldname>status</fieldname>
+    <case_value_type/>
+    <case_value_format/>
+    <case_value_decimal/>
+    <case_value_group/>
+    <cases>
+      <case>
+        <value>WATERMARK_FOUND</value>
+        <target_transform>Select when found</target_transform>
+      </case>
+    </cases>
+    <default_target_transform>Select when not found</default_target_transform>
+    <use_contains>N</use_contains>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>864</xloc>
+      <yloc>48</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>SelectValues</type>
+    <name>Select when not found</name>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <rename>batch_id_1</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>864</xloc>
+      <yloc>160</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>ExecSql</type>
+    <name>WM Not Found Execute</name>
+    <connection>ods_postgres</connection>
+    <sql>UPDATE control.batch
+SET
+    status = 'FAILED',
+    completed_at = CURRENT_TIMESTAMP,
+    error_count = error_count + 1,
+    error_code = 'WATERMARK_NOT_FOUND',
+    error_message = format(
+        'No active watermark configuration found for dataset_id=%s.',
+        (
+            SELECT dataset_id
+            FROM control.batch
+            WHERE batch_id = ?
+        )
+    ),
+    updated_at = CURRENT_TIMESTAMP
+WHERE batch_id = ?
+  AND status = 'RUNNING';</sql>
+    <execute_each_row>Y</execute_each_row>
+    <update_field/>
+    <insert_field/>
+    <delete_field/>
+    <read_field/>
+    <single_statement>Y</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <set_params>Y</set_params>
+    <arguments>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+      <argument>
+        <name>batch_id</name>
+      </argument>
+    </arguments>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>864</xloc>
+      <yloc>272</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -288,12 +974,97 @@ COMMIT;</sql>
     </hop>
     <hop>
       <from>Stream lookup</from>
-      <to>Switch / case</to>
+      <to>Reconcile Case</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Switch / case</from>
-      <to>Execute SQL script</to>
+      <from>Reconcile Case</from>
+      <to>Select when reconcile PASS</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Reconcile Case</from>
+      <to>Select when FAILED</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when FAILED</from>
+      <to>FAILED Execute SQL script</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Check Watermark</from>
+      <to>Switch / case 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case 2</from>
+      <to>Select when PASS</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when PASS</from>
+      <to>PASS Execute update Batch &amp; Watermark</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case 2</from>
+      <to>Select when NO DATA</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when NO DATA</from>
+      <to>NO DATA Execute update Batch</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case 2</from>
+      <to>Select when INITIALIZE</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case 2</from>
+      <to>Select when FAIL</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when FAIL</from>
+      <to>FAILED Execute error_log</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when found</from>
+      <to>Check Watermark</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when reconcile PASS</from>
+      <to>Check found Watermark</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Check found Watermark</from>
+      <to>Watermark found Case</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Watermark found Case</from>
+      <to>Select when found</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Watermark found Case</from>
+      <to>Select when not found</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when not found</from>
+      <to>WM Not Found Execute</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select when INITIALIZE</from>
+      <to>INITIALIZE Execute update Batch &amp; Watermark</to>
       <enabled>Y</enabled>
     </hop>
   </order>

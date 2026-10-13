@@ -326,7 +326,7 @@ var sql_update_batch_statistics;
     <hop>
       <from>Select values</from>
       <to>Execute update Batch when Pass</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Return ETL Statistics</from>
@@ -346,7 +346,7 @@ var sql_update_batch_statistics;
     <hop>
       <from>Select values 2</from>
       <to>Execute update Batch when fail</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>Switch / case</from>

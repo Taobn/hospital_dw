@@ -1,7 +1,8 @@
 UPDATE control.batch b
 SET status = 'FAILED',
     completed_at = CURRENT_TIMESTAMP,
-	error_message = 'Timeout'
+	error_message = 'Timeout',
+	error_code = 'EXECUTION_TIMEOUT'
 FROM control.dataset d
 WHERE d.dataset_id = b.dataset_id
   AND d.dataset_code = '${PRM_DATASET_CODE}'

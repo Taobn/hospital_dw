@@ -1,5 +1,14 @@
 BEGIN;
 
+CREATE TYPE control.batch_status AS ENUM (
+    'PENDING',
+    'RUNNING',
+    'SUCCESS',
+    'PARTIAL',
+    'FAILED',
+    'CANCELLED'
+);
+
 CREATE TABLE control.batch (
     batch_id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
@@ -12,7 +21,8 @@ CREATE TABLE control.batch (
     started_at               TIMESTAMPTZ NOT NULL,
     completed_at             TIMESTAMPTZ,
 
-    status                   VARCHAR(20) NOT NULL DEFAULT 'RUNNING',
+    status                   control.batch_status
+                             NOT NULL DEFAULT 'PENDING',
 
     source_row_count         BIGINT,
     accepted_row_count       BIGINT,
@@ -22,6 +32,7 @@ CREATE TABLE control.batch (
 
     hop_run_id               VARCHAR(200),
 
+    error_code 		     VARCHAR(100),
     error_message            TEXT,
 
     created_at               TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -32,18 +43,7 @@ CREATE TABLE control.batch (
         REFERENCES control.dataset (dataset_id),
 
     CONSTRAINT uq_batch_code
-        UNIQUE (batch_code),
-
-    CONSTRAINT ck_batch_status
-        CHECK (
-            status IN (
-                'RUNNING',
-                'SUCCESS',
-                'PARTIAL',
-                'FAILED',
-                'CANCELLED'
-            )
-        ),
+        UNIQUE (batch_code),	
 
     CONSTRAINT ck_batch_completed_at
         CHECK (
@@ -76,7 +76,7 @@ CREATE TABLE control.batch (
 );
 
 COMMENT ON TABLE control.batch IS
-    'ODS-level processing boundary for one dataset execution. Detailed orchestration and runtime execution logs remain in Apache Hop.';
+    'A single ingestion unit for one dataset mapping into the RAW zone. A batch represents data arrival/ingestion, not downstream processing.';
 
 COMMENT ON COLUMN control.batch.dataset_id IS
     'Logical dataset processed by this batch.';
@@ -113,6 +113,13 @@ CREATE INDEX ix_batch_status
 
 CREATE INDEX ix_batch_dataset_date
     ON control.batch (dataset_id, processing_date DESC);
+
+CREATE INDEX ix_batch_running
+    ON control.batch (
+        status,
+        started_at
+    )
+    WHERE status = 'RUNNING';
 
 GRANT SELECT, INSERT, UPDATE, DELETE
 ON control.batch

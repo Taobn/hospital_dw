@@ -25,6 +25,11 @@
       <description/>
       <default_value/>
     </parameter>
+    <parameter>
+      <name>PRM_WORKFLOW_CODE</name>
+      <description/>
+      <default_value>w01_his_ingestion</default_value>
+    </parameter>
   </parameters>
   <actions>
     <action>
@@ -68,7 +73,7 @@
       <name>05 Create Batch</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>1280</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -186,7 +191,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <attributes_hac/>
     </action>
     <action>
-      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p02_raw_his_context.hpl</filename>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p02_raw_his_build_context.hpl</filename>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
@@ -227,7 +232,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <name>06 Execute Dataset Context Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>1280</xloc>
       <yloc>176</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -255,11 +260,6 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
     <action>
       <connections>
         <connection>
-          <name>his_oracle</name>
-          <waitfor>100</waitfor>
-          <waittime>millisecond</waittime>
-        </connection>
-        <connection>
           <name>ods_postgres</name>
           <waitfor>100</waitfor>
           <waittime>millisecond</waittime>
@@ -269,13 +269,13 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <description/>
       <type>CHECK_DB_CONNECTIONS</type>
       <attributes/>
-      <xloc>960</xloc>
+      <xloc>1040</xloc>
       <yloc>48</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
     <action>
-      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p03_raw_his_ingestion_etl_stage.hpl</filename>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p03_raw_his_extract_load_stage.hpl</filename>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
@@ -292,7 +292,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
         <parameter>
-          <name>PRM_BUSINESS_DATE_KEY</name>
+          <name>PRM_BUSINESS_DATE_COLUMN</name>
           <value/>
           <stream_name/>
         </parameter>
@@ -331,13 +331,13 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <name>07 Excute ETL Stage Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>1280</xloc>
       <yloc>288</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
     <action>
-      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p04_raw_his_etl_reject.hpl</filename>
+      <filename>${PROJECT_HOME}/pipelines/ods/raw/his/p04_raw_his_validate_reject.hpl</filename>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
@@ -383,7 +383,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <name>08 Excute ETL Reject Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>1280</xloc>
       <yloc>400</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -450,7 +450,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <name>09 Excute ETL Upsert Pipeline</name>
       <type>PIPELINE</type>
       <attributes/>
-      <xloc>1088</xloc>
+      <xloc>1280</xloc>
       <yloc>496</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
@@ -472,6 +472,11 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <wait_until_finished>Y</wait_until_finished>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
+        <parameter>
+          <name>PRM_SQL_RETURN_ETL_STATISTICS</name>
+          <value/>
+          <stream_name/>
+        </parameter>
       </parameters>
       <run_configuration>local</run_configuration>
       <name>10 Return ETL Statistics</name>
@@ -506,6 +511,68 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <attributes/>
       <xloc>592</xloc>
       <yloc>496</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <sql>SELECT pg_advisory_unlock(d.dataset_id)
+FROM control.dataset d
+WHERE d.dataset_code = '${PRM_DATASET_CODE}'
+	AND d.is_active = TRUE;;
+</sql>
+      <connection>ods_postgres</connection>
+      <useVariableSubstitution>N</useVariableSubstitution>
+      <sqlfromfile>N</sqlfromfile>
+      <sqlfilename/>
+      <sqlfilename_encoding/>
+      <sendOneStatement>N</sendOneStatement>
+      <name>Final Release Lock</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <xloc>368</xloc>
+      <yloc>496</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>End</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      <xloc>208</xloc>
+      <yloc>496</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <sql>SELECT pg_advisory_unlock(d.dataset_id)
+FROM control.dataset d
+WHERE d.dataset_code = '${PRM_DATASET_CODE}'
+	AND d.is_active = TRUE;;
+</sql>
+      <connection>ods_postgres</connection>
+      <useVariableSubstitution>N</useVariableSubstitution>
+      <sqlfromfile>N</sqlfromfile>
+      <sqlfilename/>
+      <sqlfilename_encoding/>
+      <sendOneStatement>N</sendOneStatement>
+      <name>DB Connect SKIPPED and Release Lock</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <xloc>1040</xloc>
+      <yloc>176</yloc>
+      <parallel>N</parallel>
+      <attributes_hac/>
+    </action>
+    <action>
+      <name>Terminate as SKIPPED (3)</name>
+      <description/>
+      <type>DUMMY</type>
+      <attributes/>
+      <xloc>1040</xloc>
+      <yloc>288</yloc>
       <parallel>N</parallel>
       <attributes_hac/>
     </action>
@@ -599,7 +666,7 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <from>05 Create Batch</from>
       <to>06 Execute Dataset Context Pipeline</to>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -616,8 +683,58 @@ WHERE d.dataset_code = '${PRM_DATASET_CODE}'
       <unconditional>N</unconditional>
       <enabled>Y</enabled>
     </hop>
+    <hop>
+      <from>11 Finalize</from>
+      <to>Final Release Lock</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Final Release Lock</from>
+      <to>End</to>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>DB Connect SKIPPED and Release Lock</from>
+      <to>Terminate as SKIPPED (3)</to>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Check DB connections</from>
+      <to>DB Connect SKIPPED and Release Lock</to>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+      <enabled>Y</enabled>
+    </hop>
   </hops>
-  <notepads/>
+  <notepads>
+    <notepad>
+      <note>w01_his_ingestion.hwf</note>
+      <markdown>Y</markdown>
+      <notetype>GENERAL</notetype>
+      <fontsize>-1</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>14</fontcolorred>
+      <fontcolorgreen>58</fontcolorgreen>
+      <fontcolorblue>90</fontcolorblue>
+      <backgroundcolorred>201</backgroundcolorred>
+      <backgroundcolorgreen>232</backgroundcolorgreen>
+      <backgroundcolorblue>251</backgroundcolorblue>
+      <bordercolorred>14</bordercolorred>
+      <bordercolorgreen>58</bordercolorgreen>
+      <bordercolorblue>90</bordercolorblue>
+      <xloc>1844</xloc>
+      <yloc>12</yloc>
+      <width>32</width>
+      <height>32</height>
+    </notepad>
+  </notepads>
   <attributes>
     <group>
       <name>debug_plugin</name>

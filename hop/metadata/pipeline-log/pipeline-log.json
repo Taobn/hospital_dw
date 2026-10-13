@@ -2,11 +2,14 @@
   "logLevel": "ERROR",
   "pipelinesToLog": [
     {
-      "pipelineToLogFilename": "${PROJECT_HOME}/pipelines/ods/raw/his/p02_raw_exam.hpl"
+      "pipelineToLogFilename": "${PROJECT_HOME}/pipelines/ods/raw/his/p02_raw_his_build_context.hpl"
+    },
+    {
+      "pipelineToLogFilename": "${PROJECT_HOME}/pipelines/ods/raw/his/p03_raw_his_extract_load_stage.hpl"
     }
   ],
   "failParentOnLoggingFailure": false,
-  "loggingParentsOnly": true,
+  "loggingParentsOnly": false,
   "name": "pipeline-log",
   "intervalInSeconds": "30",
   "executingPeriodically": false,

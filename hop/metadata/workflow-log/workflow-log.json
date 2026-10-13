@@ -1,10 +1,10 @@
 {
   "logLevel": "ERROR",
   "failParentOnLoggingFailure": false,
-  "loggingParentsOnly": true,
+  "loggingParentsOnly": false,
   "name": "workflow-log",
   "workflowToLog": [
-    "${PROJECT_HOME}/reflection/generate-fake-books.hwf",
+    "${PROJECT_HOME}/workflows/parallel/w01_his_ingestion_parent.hwf",
     "${PROJECT_HOME}/workflows/parallel/w01_his_ingestion.hwf"
   ],
   "intervalInSeconds": "30",

@@ -24,6 +24,11 @@
         <default_value>ods_raw_exam</default_value>
       </parameter>
       <parameter>
+        <name>PRM_SOURCE_INSTANCE_ID</name>
+        <description/>
+        <default_value>1</default_value>
+      </parameter>
+      <parameter>
         <name>PRM_TARGET_KEY</name>
         <description/>
         <default_value>exam_id</default_value>
@@ -56,7 +61,7 @@
       <parameter>
         <name>PRM_TARGET_KEY_1</name>
         <description/>
-        <default_value>null</default_value>
+        <default_value/>
       </parameter>
     </parameters>
     <name>p05_raw_his_etl_upsert</name>
@@ -74,13 +79,15 @@
     <sql>SELECT
 	target_field_name
 FROM
-	control.dataset_column_mapping
+	control.dataset_column_mapping a
+LEFT JOIN control.dataset_mapping b ON
+	a.dataset_mapping_id = b.dataset_mapping_id
 WHERE
-	dataset_id = ${PRM_DATASET_ID}
-	AND target_layer = 'RAW'
-	AND storage_group = 'CORE'
+	b.dataset_id = ${PRM_DATASET_ID}
+	AND b.target_layer = 'RAW'
+	AND b.storage_group = 'CORE'
 	
-ORDER BY ordinal_position</sql>
+ORDER BY a.ordinal_position</sql>
     <limit/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
@@ -333,7 +340,7 @@ ORDER BY ordinal_position</sql>
 var colsArr = cols.split(",");
 var updatesArr;
 
-if (target_key_1 != "null") {
+if (target_key_1 != null) {
     updatesArr = colsArr.filter(function(c) {
         c = c.trim();
         return c != target_key &amp;&amp;
@@ -358,7 +365,7 @@ var target_key_composite1;
 var target_key_composite2;
 var target_key_composite3;
 var target_key_composite4;
-	if (target_key_1 != "null") {
+	if (target_key_1 != null) {
 		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"+
 								"  AND s." + target_key_1 + " IS NOT NULL\n"
 		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n" +
@@ -426,7 +433,7 @@ var sql =
       </field>
     </fields>
     <optimizationLevel>9</optimizationLevel>
-    <languageVersion>ES6</languageVersion>
+    <languageVersion>ECMASCRIPT</languageVersion>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
@@ -491,23 +498,17 @@ var sql =
     <type>TableInput</type>
     <name>Extended field mapping</name>
     <sql>SELECT
-    source_field_name,
-    target_field_name
+	target_field_name
 FROM
-    control.dataset_column_mapping
+	control.dataset_column_mapping a
+LEFT JOIN control.dataset_mapping b ON
+	a.dataset_mapping_id = b.dataset_mapping_id
 WHERE
-    dataset_id = ${PRM_DATASET_ID}
-    AND target_layer = 'RAW'
-    AND (
-        (storage_group = 'CORE' AND target_field_name = '${PRM_TARGET_KEY}')
-        OR  
-        (storage_group = 'CORE' AND source_field_name = '${PRM_CURSOR_COLUMN}')
-        OR  
-        storage_group = 'EXTENDED'
-    )
-ORDER BY 
-    ordinal_position;
-</sql>
+	b.dataset_id = ${PRM_DATASET_ID}
+	AND b.target_layer = 'RAW'
+	AND b.storage_group = 'EXTENDED'
+	
+ORDER BY a.ordinal_position</sql>
     <limit/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
@@ -568,12 +569,6 @@ ORDER BY
         <name>target_schema</name>
       </field>
       <field>
-        <name>target_object</name>
-      </field>
-      <field>
-        <name>target_object_stage</name>
-      </field>
-      <field>
         <name>target_object_extended</name>
       </field>
       <field>
@@ -629,7 +624,7 @@ ORDER BY
 var colsArr = cols.split(",");
 var updatesArr;
 
-if (target_key_1 != "null") {
+if (target_key_1 != null) {
     updatesArr = colsArr.filter(function(c) {
         c = c.trim();
         return c != target_key &amp;&amp;
@@ -654,7 +649,7 @@ var target_key_composite1;
 var target_key_composite2;
 var target_key_composite3;
 var target_key_composite4;
-	if (target_key_1 != "null") {
+	if (target_key_1 != null) {
 		target_key_composite1 = "s." + target_key + " IS NOT NULL\n"+
 								"  AND s." + target_key_1 + " IS NOT NULL\n"
 		target_key_composite2 = "d." + target_key + " = s." + target_key + "\n" +
@@ -783,12 +778,121 @@ var sql =
     </partitioning>
     <attributes/>
   </transform>
+  <transform>
+    <type>NullIf</type>
+    <name>Null if</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_schema</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_stage</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_extended</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_extended_stage</name>
+        <value/>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_key</name>
+        <value/>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_key_1</name>
+        <value/>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>160</xloc>
+      <yloc>240</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>NullIf</type>
+    <name>Null if 2</name>
+    <fields>
+      <field>
+        <name>source_instance_id</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_schema</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_stage</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_extended</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_object_extended_stage</name>
+        <value/>
+      </field>
+      <field>
+        <name>batch_id</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_key</name>
+        <value/>
+      </field>
+      <field>
+        <name>cursor_column</name>
+        <value/>
+      </field>
+      <field>
+        <name>target_key_1</name>
+        <value/>
+      </field>
+    </fields>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>160</xloc>
+      <yloc>112</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
   <order>
-    <hop>
-      <from>Get variables</from>
-      <to>Core Join rows</to>
-      <enabled>Y</enabled>
-    </hop>
     <hop>
       <from>Core field mapping</from>
       <to>Core Join rows</to>
@@ -812,7 +916,7 @@ var sql =
     <hop>
       <from>Select values</from>
       <to>Execute row SQL script Core</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>Extended Join rows</from>
@@ -832,16 +936,31 @@ var sql =
     <hop>
       <from>Select values 2</from>
       <to>Execute row SQL script Extended</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Get variables</from>
-      <to>Extended Join rows</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>Extended field mapping</from>
       <to>Extended Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables</from>
+      <to>Null if</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Null if</from>
+      <to>Extended Join rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables</from>
+      <to>Null if 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Null if 2</from>
+      <to>Core Join rows</to>
       <enabled>Y</enabled>
     </hop>
   </order>

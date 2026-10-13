@@ -29,14 +29,14 @@
         <default_value/>
       </parameter>
       <parameter>
-        <name>PRM_BUSINESS_DATE_KEY</name>
-        <description/>
-        <default_value>HE_EXAMDATE</default_value>
-      </parameter>
-      <parameter>
         <name>PRM_CURSOR_COLUMN</name>
         <description/>
         <default_value>HE_UPDATEDDATE</default_value>
+      </parameter>
+      <parameter>
+        <name>PRM_BUSINESS_DATE_COLUMN</name>
+        <description/>
+        <default_value>HE_EXAMDATE</default_value>
       </parameter>
       <parameter>
         <name>PRM_SOURCE_KEY</name>
@@ -61,15 +61,15 @@
     <source_output_fields/>
     <mappings>
       <mapping>
-        <source_transform>Row normaliser Validation</source_transform>
+        <source_transform>Filter rows Validation</source_transform>
         <source_field>validate_field</source_field>
         <target_transform_name>Data validator</target_transform_name>
         <target_attribute_key>FIELD_NAME</target_attribute_key>
         <target_detail>Y</target_detail>
       </mapping>
       <mapping>
-        <source_transform>Row normaliser Validation</source_transform>
-        <source_field>validation_name</source_field>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>val_name</source_field>
         <target_transform_name>Data validator</target_transform_name>
         <target_attribute_key>NAME</target_attribute_key>
         <target_detail>Y</target_detail>
@@ -116,6 +116,41 @@
         <target_attribute_key>FIELD_RENAME</target_attribute_key>
         <target_detail>Y</target_detail>
       </mapping>
+      <mapping>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>data_type</source_field>
+        <target_transform_name>Data validator</target_transform_name>
+        <target_attribute_key>DATA_TYPE</target_attribute_key>
+        <target_detail>Y</target_detail>
+      </mapping>
+      <mapping>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>verify_type</source_field>
+        <target_transform_name>Data validator</target_transform_name>
+        <target_attribute_key>DATA_TYPE_VERIFIED</target_attribute_key>
+        <target_detail>Y</target_detail>
+      </mapping>
+      <mapping>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>error_code</source_field>
+        <target_transform_name>Data validator</target_transform_name>
+        <target_attribute_key>ERROR_CODE</target_attribute_key>
+        <target_detail>Y</target_detail>
+      </mapping>
+      <mapping>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>error_message</source_field>
+        <target_transform_name>Data validator</target_transform_name>
+        <target_attribute_key>ERROR_CODE_DESCRIPTION</target_attribute_key>
+        <target_detail>Y</target_detail>
+      </mapping>
+      <mapping>
+        <source_transform>Filter rows Validation</source_transform>
+        <source_field>null_allowed</source_field>
+        <target_transform_name>Data validator</target_transform_name>
+        <target_attribute_key>NULL_ALLOWED</target_attribute_key>
+        <target_detail>Y</target_detail>
+      </mapping>
     </mappings>
     <target_file/>
     <no_execution>N</no_execution>
@@ -127,8 +162,8 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>288</yloc>
+      <xloc>1088</xloc>
+      <yloc>480</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -165,8 +200,8 @@
         <trim_type>none</trim_type>
       </field>
       <field>
-        <name>business_date_key</name>
-        <variable>${PRM_BUSINESS_DATE_KEY}</variable>
+        <name>business_date_column</name>
+        <variable>${PRM_BUSINESS_DATE_COLUMN}</variable>
         <type>String</type>
         <format/>
         <length>-1</length>
@@ -204,8 +239,8 @@
     <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>560</yloc>
+      <xloc>1248</xloc>
+      <yloc>752</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -225,8 +260,8 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>672</yloc>
+      <xloc>1248</xloc>
+      <yloc>864</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -255,16 +290,16 @@
         <norm>validate_field</norm>
       </field>
       <field>
-        <name>business_date_key</name>
-        <value>check_business_date_key</value>
+        <name>business_date_column</name>
+        <value>check_business_date_column</value>
         <norm>validate_field</norm>
       </field>
     </fields>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>416</yloc>
+      <xloc>1248</xloc>
+      <yloc>656</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -288,8 +323,8 @@
         <norm>reject_field</norm>
       </field>
       <field>
-        <name>business_date_key</name>
-        <value>business_date_key</value>
+        <name>business_date_column</name>
+        <value>business_date_column</value>
         <norm>reject_field</norm>
       </field>
       <field>
@@ -303,11 +338,11 @@
         <norm>reject_field</norm>
       </field>
     </fields>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>960</xloc>
-      <yloc>560</yloc>
+      <xloc>1456</xloc>
+      <yloc>752</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -383,8 +418,8 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>784</xloc>
-      <yloc>176</yloc>
+      <xloc>1280</xloc>
+      <yloc>368</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -422,8 +457,8 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>960</xloc>
-      <yloc>288</yloc>
+      <xloc>1456</xloc>
+      <yloc>480</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -439,8 +474,8 @@
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>784</xloc>
-      <yloc>288</yloc>
+      <xloc>1280</xloc>
+      <yloc>480</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -459,22 +494,20 @@
 FROM
 	control.dataset_column_mapping
 WHERE
-	dataset_id = ${PRM_DATASET_ID}
-	AND target_layer = 'RAW'
-	AND storage_group = 'CORE'
+	dataset_mapping_id = ?
 	
-ORDER BY ordinal_position</sql>
+ORDER BY ordinal_position;</sql>
     <limit/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>N</variables_active>
     <connection>ods_postgres</connection>
-    <lookup/>
+    <lookup>Get Dataset Mapping ID Core</lookup>
     <sql_from_file/>
     <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>32</yloc>
+      <xloc>1088</xloc>
+      <yloc>224</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -548,8 +581,8 @@ ORDER BY ordinal_position</sql>
     <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>176</yloc>
+      <xloc>880</xloc>
+      <yloc>368</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -565,8 +598,8 @@ ORDER BY ordinal_position</sql>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>176</yloc>
+      <xloc>1088</xloc>
+      <yloc>368</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -582,8 +615,8 @@ ORDER BY ordinal_position</sql>
     <distribute>Y</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>288</yloc>
+      <xloc>880</xloc>
+      <yloc>480</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -602,19 +635,245 @@ ORDER BY ordinal_position</sql>
 FROM
     control.dataset_column_mapping
 WHERE
-    dataset_id = ${PRM_DATASET_ID}
-    AND target_layer = 'RAW'
-    AND (
-        (storage_group = 'CORE' AND source_field_name = '${PRM_SOURCE_KEY}')
-        OR  
-		(storage_group = 'CORE' AND source_field_name = '${PRM_SOURCE_KEY_1}')
-        OR  
-        storage_group = 'EXTENDED'
-    )
+    dataset_mapping_id = ?
 ORDER BY 
     ordinal_position;
 </sql>
     <limit/>
+    <execute_each_row>Y</execute_each_row>
+    <variables_active>N</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup>Get Dataset Mapping ID Extended</lookup>
+    <sql_from_file/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>480</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>FilterRows</type>
+    <name>Filter rows Reject</name>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <operator>-</operator>
+        <leftvalue>reject_field</leftvalue>
+        <function>IS NOT NULL</function>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <operator>-</operator>
+            <leftvalue>reject_field</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+        </conditions>
+      </condition>
+    </compare>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1456</xloc>
+      <yloc>608</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>FilterRows</type>
+    <name>Filter rows Validation</name>
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <operator>-</operator>
+        <leftvalue>validate_field</leftvalue>
+        <function>IS NOT NULL</function>
+        <conditions>
+          <condition>
+            <negated>N</negated>
+            <operator>-</operator>
+            <leftvalue>validate_field</leftvalue>
+            <function>IS NOT NULL</function>
+            <conditions/>
+          </condition>
+        </conditions>
+      </condition>
+    </compare>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>560</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>DataGrid</type>
+    <name>Validation Infor</name>
+    <fields>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>val_name</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>error_code</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>error_message</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>verify_type</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>data_type</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <currency/>
+        <decimal/>
+        <group/>
+        <name>null_allowed</name>
+        <type>String</type>
+        <format/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <data>
+      <line>
+        <item>check_source_key</item>
+        <item>VALIDATION_REQUIRED_FIELD</item>
+        <item>Source key is null/ Invalid data type</item>
+        <item>Y</item>
+        <item>Integer</item>
+        <item>N</item>
+      </line>
+      <line>
+        <item>check_source_key_1</item>
+        <item>VALIDATION_REQUIRED_FIELD</item>
+        <item>Source key is null/ Invalid data type</item>
+        <item>Y</item>
+        <item>Integer</item>
+        <item>N</item>
+      </line>
+      <line>
+        <item>check_cursor_column</item>
+        <item>VALIDATION_REQUIRED_FIELD</item>
+        <item>Cursor column is null/ Invalid data type</item>
+        <item>Y</item>
+        <item>Timestamp</item>
+        <item>N</item>
+      </line>
+      <line>
+        <item>check_business_date_column</item>
+        <item>VALIDATION_REQUIRED_FIELD</item>
+        <item>Business date column  is null/ Invalid data type</item>
+        <item>Y</item>
+        <item>Timestamp</item>
+        <item>N</item>
+      </line>
+    </data>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>752</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>MergeJoin</type>
+    <name>Merge join</name>
+    <join_type>INNER</join_type>
+    <transform1>Validation Infor</transform1>
+    <transform2>Row normaliser Validation</transform2>
+    <keys_1>
+      <key>val_name</key>
+    </keys_1>
+    <keys_2>
+      <key>validation_name</key>
+    </keys_2>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>656</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Get Dataset Mapping ID Core</name>
+    <sql>SELECT
+	dataset_mapping_id
+FROM
+	control.dataset_mapping
+WHERE
+	dataset_id = ${PRM_DATASET_ID}
+	AND target_layer = 'RAW'
+	AND storage_group = 'CORE';</sql>
+    <limit>1</limit>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <connection>ods_postgres</connection>
@@ -623,8 +882,37 @@ ORDER BY
     <distribute>N</distribute>
     <copies>1</copies>
     <GUI>
-      <xloc>144</xloc>
-      <yloc>288</yloc>
+      <xloc>1088</xloc>
+      <yloc>112</yloc>
+    </GUI>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <attributes/>
+  </transform>
+  <transform>
+    <type>TableInput</type>
+    <name>Get Dataset Mapping ID Extended</name>
+    <sql>SELECT
+	dataset_mapping_id
+FROM
+	control.dataset_mapping
+WHERE
+	dataset_id = ${PRM_DATASET_ID}
+	AND target_layer = 'RAW'
+	AND storage_group = 'EXTENDED'</sql>
+    <limit>1</limit>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <connection>ods_postgres</connection>
+    <lookup/>
+    <sql_from_file/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>480</yloc>
     </GUI>
     <partitioning>
       <method>none</method>
@@ -646,11 +934,6 @@ ORDER BY
     <hop>
       <from>Get variables</from>
       <to>Row normaliser Reject</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Row normaliser Reject</from>
-      <to>Database lookup</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -699,8 +982,43 @@ ORDER BY
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Row normaliser Validation</from>
+      <from>Row normaliser Reject</from>
+      <to>Filter rows Reject</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows Reject</from>
+      <to>Database lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows Validation</from>
       <to>ETL metadata injection</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Validation Infor</from>
+      <to>Merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Row normaliser Validation</from>
+      <to>Merge join</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Merge join</from>
+      <to>Filter rows Validation</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get Dataset Mapping ID Core</from>
+      <to>Core field mapping</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get Dataset Mapping ID Extended</from>
+      <to>Extended field mapping</to>
       <enabled>Y</enabled>
     </hop>
   </order>

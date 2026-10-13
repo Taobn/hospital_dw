@@ -7,7 +7,18 @@
     <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
     <pipeline_type>Normal</pipeline_type>
     <pipeline_status>0</pipeline_status>
-    <parameters/>
+    <parameters>
+      <parameter>
+        <name>PRM_HOP_RUN_ID</name>
+        <description/>
+        <default_value/>
+      </parameter>
+      <parameter>
+        <name>PRM_DATASET_CODE</name>
+        <description/>
+        <default_value/>
+      </parameter>
+    </parameters>
     <name>p00_create_batch</name>
     <name_sync_with_filename>Y</name_sync_with_filename>
     <description/>
@@ -23,6 +34,7 @@
     <sql>WITH inserted AS (
     INSERT INTO control.batch (
         dataset_id,
+		target_layer,
         batch_code,
         processing_date,
         started_at,
@@ -31,6 +43,7 @@
     )
     SELECT
         d.dataset_id,
+		'RAW',
         '${PRM_DATASET_CODE}' || '_' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD_HH24MISS') || '_' || UPPER(SUBSTRING(MD5(RANDOM()::TEXT) FROM 1 FOR 6)),
         CURRENT_DATE,
         CURRENT_TIMESTAMP,

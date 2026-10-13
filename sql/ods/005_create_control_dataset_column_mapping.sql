@@ -4,20 +4,11 @@ CREATE TABLE control.dataset_column_mapping (
     dataset_column_mapping_id
         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 
-    dataset_id
+    dataset_mapping_id
         BIGINT NOT NULL,
 
     source_field_name
         VARCHAR(128) NOT NULL,
-
-    target_layer
-        VARCHAR(20) NOT NULL,
-
-    target_schema
-        VARCHAR(128) NOT NULL,
-
-    target_object
-        VARCHAR(256) NOT NULL,
 
     target_field_name
         VARCHAR(128) NOT NULL,
@@ -36,8 +27,6 @@ CREATE TABLE control.dataset_column_mapping (
 
     ordinal_position
         INTEGER,
-    
-    storage_group VARCHAR(30) NOT NULL DEFAULT 'CORE',
 
     is_nullable
         BOOLEAN,
@@ -54,30 +43,28 @@ CREATE TABLE control.dataset_column_mapping (
     updated_at
         TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_dataset_column_mapping_dataset
-        FOREIGN KEY (dataset_id)
-        REFERENCES control.dataset (dataset_id)
+    CONSTRAINT fk_dataset_column_mapping_dataset_mapping
+        FOREIGN KEY (dataset_mapping_id)
+        REFERENCES control.dataset_mapping (dataset_mapping_id)
         ON DELETE CASCADE,
 
-    CONSTRAINT uq_dataset_column_mapping
+    CONSTRAINT uq_dataset_column_mapping_source
         UNIQUE (
-            dataset_id,
-            target_layer,
-            target_schema,
-            target_object,
-            source_field_name,
+            dataset_mapping_id,
+            source_field_name
+        ),
+
+    CONSTRAINT uq_dataset_column_mapping_target
+        UNIQUE (
+            dataset_mapping_id,
             target_field_name
         ),
 
-    CONSTRAINT ck_dataset_column_mapping_layer
-        CHECK (
-            target_layer IN (
-                'RAW',
-                'IDENTITY',
-                'CANONICAL',
-                'DORIS'
-            )
-        ),
+    CONSTRAINT ck_dataset_column_mapping_source_column
+        CHECK (BTRIM(source_field_name) <> ''),
+
+    CONSTRAINT ck_dataset_column_mapping_target_column
+        CHECK (BTRIM(target_field_name) <> ''),
 
     CONSTRAINT ck_dataset_column_mapping_role
         CHECK (
@@ -95,10 +82,6 @@ CREATE TABLE control.dataset_column_mapping (
             ordinal_position IS NULL
             OR ordinal_position > 0
         )
-),
-    CONSTRAINT ck_dataset_column_mapping_storage_group
-	CHECK (storage_group IN ('CORE', 'EXTENDED'
-	)
 );
 
 COMMENT ON TABLE control.dataset_column_mapping IS
@@ -121,19 +104,12 @@ COMMENT ON COLUMN control.dataset_column_mapping.ordinal_position IS
 
 CREATE INDEX ix_dataset_column_mapping_dataset
     ON control.dataset_column_mapping (
-        dataset_id
-    );
-
-CREATE INDEX ix_dataset_column_mapping_target
-    ON control.dataset_column_mapping (
-        target_layer,
-        target_schema,
-        target_object
+        dataset_mapping_id
     );
 
 CREATE INDEX ix_dataset_column_mapping_source
     ON control.dataset_column_mapping (
-        dataset_id,
+        dataset_mapping_id,
         source_field_name
     );
 
